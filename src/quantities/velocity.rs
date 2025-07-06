@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 //! Velocity units
 
 use crate::*;
@@ -23,7 +24,11 @@ define_prefixed_aliases! {
 // Convenience constructors
 impl_quantity_constructors!(
     Velocity,
-    MeterPerSecond, KilometerPerHour, MilePerHour, Knot, FootPerSecond,
+    MeterPerSecond,
+    KilometerPerHour,
+    MilePerHour,
+    Knot,
+    FootPerSecond,
     SpeedOfLight
 );
 
@@ -39,7 +44,7 @@ mod tests {
     fn test_velocity_units() {
         let mps = Velocity::<MeterPerSecond>::new(10.0);
         let kmh = Velocity::<KilometerPerHour>::new(36.0);
-        
+
         // 36 km/h should equal 10 m/s
         let mps_from_kmh: Velocity<MeterPerSecond> = kmh.convert_to();
         assert!((mps_from_kmh.value() - mps.value()).abs() < 0.01);
@@ -49,7 +54,7 @@ mod tests {
     fn test_tuple_syntax() {
         let v1 = Velocity::<(Meter, Second)>::new(10.0);
         let v2 = Velocity::<MeterPerSecond>::new(10.0);
-        
+
         // Both should have same SI value
         assert_eq!(v1.to_si(), 10.0);
         assert_eq!(v2.to_si(), 10.0);
@@ -59,7 +64,7 @@ mod tests {
     fn test_imperial_velocity() {
         let mph = Velocity::<MilePerHour>::new(60.0);
         let mps: Velocity<MeterPerSecond> = mph.convert_to();
-        
+
         // 60 mph ≈ 26.8 m/s
         assert!((mps.value() - 26.8224).abs() < 0.1);
     }
@@ -68,7 +73,7 @@ mod tests {
     fn test_nautical_velocity() {
         let knot = Velocity::<Knot>::new(1.0);
         let mps: Velocity<MeterPerSecond> = knot.convert_to();
-        
+
         // 1 knot ≈ 0.514 m/s
         assert!((mps.value() - 0.514_444).abs() < 0.001);
     }
@@ -77,7 +82,7 @@ mod tests {
     fn test_speed_of_light() {
         let c = Velocity::<SpeedOfLight>::new(1.0);
         let mps: Velocity<MeterPerSecond> = c.convert_to();
-        
+
         assert_eq!(mps.value(), 299_792_458.0);
     }
 
@@ -85,10 +90,10 @@ mod tests {
     fn test_convenience_constructors() {
         let v1 = Velocity::<MeterPerSecond>::MeterPerSecond(25.0);
         let v2 = Velocity::<KilometerPerHour>::KilometerPerHour(90.0);
-        
+
         assert_eq!(v1.value(), 25.0);
         assert_eq!(v2.value(), 90.0);
-        
+
         // 90 km/h = 25 m/s
         let v2_as_mps: Velocity<MeterPerSecond> = v2.convert_to();
         assert!((v2_as_mps.value() - v1.value()).abs() < 0.01);

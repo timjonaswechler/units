@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 //! Time units
 
 use crate::*;
@@ -14,15 +15,15 @@ define_units_for_dimension! {
         Day = "d", 86400.0,
         Week = "week", 604800.0,
         Year = "yr", 31_557_600.0,  // Julian year
-        
+
         // Astronomical time scales
         SiderealDay = "sid_day", 86164.0905,
         SiderealYear = "sid_yr", 31_558_149.5,
         TropicalYear = "trop_yr", 31_556_925.216,
-        
+
         // Planck time
         PlanckTime = "tₚ", 5.391_247e-44,
-        
+
         // Common fractions
         Millisecond = "ms", 0.001,
         Microsecond = "μs", 1e-6,
@@ -40,10 +41,20 @@ define_prefixed_aliases! {
 // Convenience constructors
 impl_quantity_constructors!(
     Time,
-    Second, Minute, Hour, Day, Week, Year,
-    SiderealDay, SiderealYear, TropicalYear,
+    Second,
+    Minute,
+    Hour,
+    Day,
+    Week,
+    Year,
+    SiderealDay,
+    SiderealYear,
+    TropicalYear,
     PlanckTime,
-    Millisecond, Microsecond, Nanosecond, Picosecond
+    Millisecond,
+    Microsecond,
+    Nanosecond,
+    Picosecond
 );
 
 #[cfg(test)]
@@ -55,11 +66,11 @@ mod tests {
         let s = Time::<Second>::new(1.0);
         let min = Time::<Minute>::new(1.0);
         let h = Time::<Hour>::new(1.0);
-        
+
         // Test conversions
         let s_from_min: Time<Second> = min.convert_to();
         assert_eq!(s_from_min.value(), 60.0);
-        
+
         let s_from_h: Time<Second> = h.convert_to();
         assert_eq!(s_from_h.value(), 3600.0);
     }
@@ -68,10 +79,10 @@ mod tests {
     fn test_astronomical_time() {
         let year = Time::<Year>::new(1.0);
         let day = Time::<Day>::new(365.25);
-        
+
         let year_in_seconds: Time<Second> = year.convert_to();
         let day_in_seconds: Time<Second> = day.convert_to();
-        
+
         // Should be approximately equal (Julian year vs 365.25 days)
         let diff = (year_in_seconds.value() - day_in_seconds.value()).abs();
         assert!(diff < 1000.0); // Within 1000 seconds
@@ -82,7 +93,7 @@ mod tests {
         let ms = Time::<Millisecond>::new(1000.0);
         let s: Time<Second> = ms.convert_to();
         assert_eq!(s.value(), 1.0);
-        
+
         let ns = Time::<Nanosecond>::new(1e9);
         let s2: Time<Second> = ns.convert_to();
         assert_eq!(s2.value(), 1.0);
@@ -92,9 +103,9 @@ mod tests {
     fn test_convenience_constructors() {
         let t1 = Time::<Second>::Second(1.0);
         let t2 = Time::<Minute>::Minute(1.0 / 60.0);
-        
+
         assert_eq!(t1.value(), 1.0);
-        
+
         let t1_as_min: Time<Minute> = t1.convert_to();
         assert!((t1_as_min.value() - t2.value()).abs() < 1e-10);
     }

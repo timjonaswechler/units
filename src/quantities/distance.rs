@@ -1,8 +1,9 @@
+#![allow(non_snake_case)]
 //! Distance/Length units
 
 use crate::*;
 
-// Re-export the type alias from core 
+// Re-export the type alias from core
 pub use crate::core::Distance;
 
 // Define base length units
@@ -17,16 +18,16 @@ define_units_for_dimension! {
         Yard = "yd", 0.9144,
         Mile = "mi", 1609.344,
         NauticalMile = "nmi", 1852.0,
-        
+
         // Astronomical units
         AstronomicalUnit = "AU", 1.495_978_707e11,
         LightYear = "ly", 9.460_730_472_580_8e15,
         Parsec = "pc", 3.085_677_581e16,
-        
+
         // Planck and atomic scales
         PlanckLength = "ℓₚ", 1.616_255e-35,
         BohrRadius = "a₀", 5.291_772_109e-11,
-        
+
         // Planetary radii
         EarthRadius = "R⊕", 6.371e6,
         SolarRadius = "R☉", 6.96e8,
@@ -42,12 +43,24 @@ define_prefixed_aliases! {
 
 // Convenience constructors
 impl_quantity_constructors!(
-    Distance, 
-    Meter, Centimeter, Millimeter, Kilometer,
-    Inch, Foot, Yard, Mile, NauticalMile,
-    AstronomicalUnit, LightYear, Parsec,
-    PlanckLength, BohrRadius,
-    EarthRadius, SolarRadius, JupiterRadius
+    Distance,
+    Meter,
+    Centimeter,
+    Millimeter,
+    Kilometer,
+    Inch,
+    Foot,
+    Yard,
+    Mile,
+    NauticalMile,
+    AstronomicalUnit,
+    LightYear,
+    Parsec,
+    PlanckLength,
+    BohrRadius,
+    EarthRadius,
+    SolarRadius,
+    JupiterRadius
 );
 
 #[cfg(test)]
@@ -59,11 +72,11 @@ mod tests {
         let m = Distance::<Meter>::new(1.0);
         let km = Distance::<Kilometer>::new(1.0);
         let cm = Distance::<Centimeter>::new(100.0);
-        
+
         // Test conversions
         let m_from_km: Distance<Meter> = km.convert_to();
         assert_eq!(m_from_km.value(), 1000.0);
-        
+
         let m_from_cm: Distance<Meter> = cm.convert_to();
         assert_eq!(m_from_cm.value(), 1.0);
     }
@@ -86,10 +99,10 @@ mod tests {
     fn test_convenience_constructors() {
         let d1 = Distance::<Meter>::Meter(100.0);
         let d2 = Distance::<Kilometer>::Kilometer(0.1);
-        
+
         assert_eq!(d1.value(), 100.0);
         assert_eq!(d2.value(), 0.1);
-        
+
         // Should be equivalent
         let d1_as_km: Distance<Kilometer> = d1.convert_to();
         assert!((d1_as_km.value() - d2.value()).abs() < 1e-10);
