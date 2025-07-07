@@ -1,118 +1,164 @@
-//! Unit composition system supporting all three approaches
+//! Compositional operators for building complex units
+//!
+//! This module provides operators for composing complex units from simpler ones:
+//! - `Per<U>` - Inverts the dimensions of a unit (e.g., Per<Second> = T⁻¹)
+//! - `Exponent<U, N>` - Raises a unit to a power (e.g., Exponent<Meter, 2> = L²)
+//! - Tuple implementations for multiplication
 
-/// Trait for unit composition - works with single units, tuples, aliases, and prefixed units
-pub trait UnitComposition {
-    /// Convert from this unit to SI base units
-    fn to_si_factor() -> f64;
-    
-    /// Convert from SI base units to this unit  
-    fn from_si_factor() -> f64;
-    
-    /// Human-readable symbol for this unit
-    fn symbol() -> String;
+use super::DimensionExtractor;
+use std::marker::PhantomData;
+
+/// Inverts all dimensions of a unit type
+///
+/// `Per<U>` represents the reciprocal of unit `U`. For example:
+/// - `Per<Second>` represents s⁻¹ (frequency dimension)
+/// - `Per<Meter>` represents m⁻¹ (wavenumber dimension)
+///
+/// # Examples
+///
+/// ```rust
+/// use physics_units::core::composition::Per;
+/// use physics_units::units::base::{Meter, Second};
+///
+/// // Velocity: meter per second
+/// type Velocity = (Meter, Per<Second>);
+///
+/// // Frequency: per second
+/// type Frequency = Per<Second>;
+/// ```
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Per<U>(PhantomData<U>);
+
+impl<U: DimensionExtractor> DimensionExtractor for Per<U> {
+    const L: i8 = -U::L;
+    const M: i8 = -U::M;
+    const T: i8 = -U::T;
+    const THETA: i8 = -U::THETA;
+    const I: i8 = -U::I;
+    const J: i8 = -U::J;
+    const N: i8 = -U::N;
 }
 
-// Implementation for empty tuple (SI base units)
-impl UnitComposition for () {
-    #[inline]
-    fn to_si_factor() -> f64 { 1.0 }
-    
-    #[inline]
-    fn from_si_factor() -> f64 { 1.0 }
-    
-    fn symbol() -> String { "SI".to_string() }
+/// Raises a unit to a power
+///
+/// `Exponent<U, N>` represents unit `U` raised to the power `N`. For example:
+/// - `Exponent<Meter, 2>` represents m² (area dimension)
+/// - `Exponent<Second, -1>` represents s⁻¹ (same as `Per<Second>`)
+///
+/// # Examples
+///
+/// ```rust
+/// use physics_units::core::composition::Exponent;
+/// use physics_units::units::base::{Meter, Second};
+///
+/// // Area: square meters
+/// type Area = Exponent<Meter, 2>;
+///
+/// // Acceleration: meter per second squared
+/// type Acceleration = (Meter, Per<Exponent<Second, 2>>);
+/// ```
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Exponent<U, const N: i8>(PhantomData<U>);
+
+impl<U: DimensionExtractor, const N: i8> DimensionExtractor for Exponent<U, N> {
+    const L: i8 = U::L * N;
+    const M: i8 = U::M * N;
+    const T: i8 = U::T * N;
+    const THETA: i8 = U::THETA * N;
+    const I: i8 = U::I * N;
+    const J: i8 = U::J * N;
+    const N: i8 = U::N * N;
 }
 
-// Implementation for tuple units (2 units: U1/U2)
-impl<U1, U2> UnitComposition for (U1, U2) 
-where 
-    U1: UnitComposition, 
-    U2: UnitComposition 
+/// Represents a dimensionless unit (no dimensions)
+///
+/// Used for dimensionless quantities like angles, ratios, and pure numbers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct DimensionlessUnit;
+
+impl DimensionExtractor for DimensionlessUnit {
+    // All dimensions are 0 by default
+}
+
+// Tuple composition for 2 units (multiplication)
+impl<U1: DimensionExtractor, U2: DimensionExtractor> DimensionExtractor for (U1, U2) {
+    const L: i8 = U1::L + U2::L;
+    const M: i8 = U1::M + U2::M;
+    const T: i8 = U1::T + U2::T;
+    const THETA: i8 = U1::THETA + U2::THETA;
+    const I: i8 = U1::I + U2::I;
+    const J: i8 = U1::J + U2::J;
+    const N: i8 = U1::N + U2::N;
+}
+
+// Tuple composition for 3 units
+impl<U1, U2, U3> DimensionExtractor for (U1, U2, U3)
+where
+    U1: DimensionExtractor,
+    U2: DimensionExtractor,
+    U3: DimensionExtractor,
 {
-    #[inline]
-    fn to_si_factor() -> f64 { 
-        U1::to_si_factor() / U2::to_si_factor() 
-    }
-    
-    #[inline]
-    fn from_si_factor() -> f64 { 
-        1.0 / Self::to_si_factor() 
-    }
-    
-    fn symbol() -> String { 
-        format!("{}/{}", U1::symbol(), U2::symbol()) 
-    }
+    const L: i8 = U1::L + U2::L + U3::L;
+    const M: i8 = U1::M + U2::M + U3::M;
+    const T: i8 = U1::T + U2::T + U3::T;
+    const THETA: i8 = U1::THETA + U2::THETA + U3::THETA;
+    const I: i8 = U1::I + U2::I + U3::I;
+    const J: i8 = U1::J + U2::J + U3::J;
+    const N: i8 = U1::N + U2::N + U3::N;
 }
 
-// Implementation for tuple units (3 units: U1*U2/U3)
-impl<U1, U2, U3> UnitComposition for (U1, U2, U3) 
-where 
-    U1: UnitComposition, 
-    U2: UnitComposition, 
-    U3: UnitComposition 
+// Tuple composition for 4 units
+impl<U1, U2, U3, U4> DimensionExtractor for (U1, U2, U3, U4)
+where
+    U1: DimensionExtractor,
+    U2: DimensionExtractor,
+    U3: DimensionExtractor,
+    U4: DimensionExtractor,
 {
-    #[inline]
-    fn to_si_factor() -> f64 { 
-        U1::to_si_factor() * U2::to_si_factor() / U3::to_si_factor() 
-    }
-    
-    #[inline]
-    fn from_si_factor() -> f64 { 
-        1.0 / Self::to_si_factor() 
-    }
-    
-    fn symbol() -> String { 
-        format!("{}⋅{}/{}", U1::symbol(), U2::symbol(), U3::symbol()) 
-    }
+    const L: i8 = U1::L + U2::L + U3::L + U4::L;
+    const M: i8 = U1::M + U2::M + U3::M + U4::M;
+    const T: i8 = U1::T + U2::T + U3::T + U4::T;
+    const THETA: i8 = U1::THETA + U2::THETA + U3::THETA + U4::THETA;
+    const I: i8 = U1::I + U2::I + U3::I + U4::I;
+    const J: i8 = U1::J + U2::J + U3::J + U4::J;
+    const N: i8 = U1::N + U2::N + U3::N + U4::N;
 }
 
-// Implementation for tuple units (4 units: U1*U2/(U3*U4))
-impl<U1, U2, U3, U4> UnitComposition for (U1, U2, U3, U4) 
-where 
-    U1: UnitComposition, 
-    U2: UnitComposition, 
-    U3: UnitComposition,
-    U4: UnitComposition 
-{
-    #[inline]
-    fn to_si_factor() -> f64 { 
-        (U1::to_si_factor() * U2::to_si_factor()) / (U3::to_si_factor() * U4::to_si_factor())
-    }
-    
-    #[inline]
-    fn from_si_factor() -> f64 { 
-        1.0 / Self::to_si_factor() 
-    }
-    
-    fn symbol() -> String { 
-        format!("{}⋅{}/{}⋅{}", U1::symbol(), U2::symbol(), U3::symbol(), U4::symbol()) 
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    struct TestUnit1;
-    impl UnitComposition for TestUnit1 {
-        fn to_si_factor() -> f64 { 1.0 }
-        fn from_si_factor() -> f64 { 1.0 }
-        fn symbol() -> String { "T1".to_string() }
-    }
-
-    struct TestUnit2;
-    impl UnitComposition for TestUnit2 {
-        fn to_si_factor() -> f64 { 2.0 }
-        fn from_si_factor() -> f64 { 0.5 }
-        fn symbol() -> String { "T2".to_string() }
-    }
-
-    #[test]
-    fn test_tuple_composition_2() {
-        type TupleUnit = (TestUnit1, TestUnit2);
-        
-        assert_eq!(TupleUnit::to_si_factor(), 0.5); // 1.0 / 2.0
-        assert_eq!(TupleUnit::from_si_factor(), 2.0); // 1.0 / 0.5
-        assert_eq!(TupleUnit::symbol(), "T1/T2");
-    }
-}
+// TODO: Unit simplification rules
+// These conflict with the generic implementations above.
+// We'll need to use type-level programming techniques or macros to implement these properly.
+// For now, users can manually simplify their types if needed.
+// // Unit simplification rules                                                         │ │
+//                                                                                      │ │
+// /// Double inversion simplification: Per<Per<U>> = U                                 │ │
+// impl<U: DimensionExtractor> DimensionExtractor for Per<Per<U>> {                     │ │
+//     const L: i8 = U::L;                                                              │ │
+//     const M: i8 = U::M;                                                              │ │
+//     const T: i8 = U::T;                                                              │ │
+//     const THETA: i8 = U::THETA;                                                      │ │
+//     const I: i8 = U::I;                                                              │ │
+//     const J: i8 = U::J;                                                              │ │
+//     const N: i8 = U::N;                                                              │ │
+// }                                                                                    │ │
+//                                                                                      │ │
+// /// Power of 1 simplification: Exponent<U, 1> = U                                    │ │
+// impl<U: DimensionExtractor> DimensionExtractor for Exponent<U, 1> {                  │ │
+//     const L: i8 = U::L;                                                              │ │
+//     const M: i8 = U::M;                                                              │ │
+//     const T: i8 = U::T;                                                              │ │
+//     const THETA: i8 = U::THETA;                                                      │ │
+//     const I: i8 = U::I;                                                              │ │
+//     const J: i8 = U::J;                                                              │ │
+//     const N: i8 = U::N;                                                              │ │
+// }                                                                                    │ │
+//                                                                                      │ │
+// /// Power of 0 simplification: Exponent<U, 0> = dimensionless                        │ │
+// impl<U: DimensionExtractor> DimensionExtractor for Exponent<U, 0> {                  │ │
+//     const L: i8 = 0;                                                                 │ │
+//     const M: i8 = 0;                                                                 │ │
+//     const T: i8 = 0;                                                                 │ │
+//     const THETA: i8 = 0;                                                             │ │
+//     const I: i8 = 0;                                                                 │ │
+//     const J: i8 = 0;                                                                 │ │
+//     const N: i8 = 0;                                                                 │ │
+// }

@@ -33,7 +33,7 @@ default = ["f64", "precision-6"]
 # Value type selection (mutually exclusive)
 f32 = []
 f64 = []
-f128 = []
+f128 = []  # Requires nightly Rust
 
 # Precision configuration
 precision-3 = []
@@ -50,6 +50,11 @@ scientific = []
 game = ["f32", "precision-3", "compact"]
 science = ["f64", "precision-9", "scientific"]
 physics = ["f128", "precision-12", "verbose"]
+
+# Individual feature tests should disable defaults
+test-f32 = ["f32"]
+test-f64 = ["f64"]
+test-f128 = ["f128"]
 
 # Optional features
 serde = ["dep:serde"]

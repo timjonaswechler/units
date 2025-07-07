@@ -1,6 +1,6 @@
 //! Metric prefix definitions
 
-use crate::core::DimensionExtractor;
+use crate::core::{DimensionExtractor, Quantity};
 use std::marker::PhantomData;
 
 /// Trait for metric prefixes
@@ -32,6 +32,8 @@ impl<P: Prefix, U: DimensionExtractor> DimensionExtractor for Prefixed<P, U> {
     const J: i8 = U::J;
     const N: i8 = U::N;
 }
+
+// Prefixed units inherit dimensional properties from base units
 
 // Large prefixes
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
@@ -181,6 +183,21 @@ use crate::units::base::*;
 /// Kilogram - SI base unit of mass (1000 grams)
 /// This is the official SI base unit, implemented as kilo + gram
 pub type Kilogram = Prefixed<Kilo, Gram>;
+
+// Factory functions for proper unit conversion
+impl Quantity<Kilogram> {
+    /// Create a kilogram quantity, automatically converting to internal gram storage
+    pub fn from_kilograms(kg_value: f64) -> Self {
+        Self::new(kg_value * 1000.0)  // Convert kg to g internally
+    }
+}
+
+impl Quantity<Gram> {
+    /// Create a gram quantity (no conversion needed)
+    pub fn from_grams(g_value: f64) -> Self {
+        Self::new(g_value)
+    }
+}
 
 /// Kilometer (1000 meters)
 pub type Kilometer = Prefixed<Kilo, Meter>;

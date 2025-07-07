@@ -1,11 +1,11 @@
 //! Arithmetic operations for quantities
+//!
+//! This module implements automatic dimensional arithmetic operations:
+//! - Multiplication creates dimensional composition
+//! - Division creates dimensional ratios  
+//! - Addition/Subtraction requires dimensional compatibility
 
-pub mod same_dimension;
-pub mod dimensional;
-pub mod scalar;
-pub mod mixed_units;
+pub mod ops;
+pub mod conversion;
 
-pub use same_dimension::*;
-pub use dimensional::*;
-pub use scalar::*;
-pub use mixed_units::*;
+// Re-export operations (they're automatically available via traits)
