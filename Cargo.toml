@@ -24,9 +24,34 @@ categories = ["science", "mathematics"]
 [dependencies]
 serde = { version = "1.0", features = ["derive"], optional = true }
 paste = "1.0"
+num-traits = "0.2"
+static_assertions = "1.0"
 
 [features]
-default = ["serde"]
+default = ["f64", "precision-6"]
+
+# Value type selection (mutually exclusive)
+f32 = []
+f64 = []
+f128 = []
+
+# Precision configuration
+precision-3 = []
+precision-6 = []
+precision-9 = []
+precision-12 = []
+
+# Display styles
+compact = []
+verbose = []
+scientific = []
+
+# Domain profiles (don't inherit defaults)
+game = ["f32", "precision-3", "compact"]
+science = ["f64", "precision-9", "scientific"]
+physics = ["f128", "precision-12", "verbose"]
+
+# Optional features
 serde = ["dep:serde"]
 
 [dev-dependencies]
