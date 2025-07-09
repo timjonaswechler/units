@@ -88,10 +88,3 @@ define_units! {
 // ================================================================================================
 
 pub type KiloParsec = Prefixed<Kilo, Parsec>;
-
-// ================================================================================================
-// AUTOMATIC UNIT CONVERSIONS
-// ================================================================================================
-
-// Enable automatic conversions between all distance units using AutoConvert trait
-// Usage: let distance_meters: Distance<Meter> = distance_au.convert();
