@@ -35,22 +35,25 @@
 //! println!("Neutron star surface gravity: {:.2e} m/s²", neutron_star_gravity.value());
 //! ```
 
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Acceleration, 1, 0, -2, 0, 0, 0, 0); // Length/Time²
+define_quantity!(
+    Acceleration,
+    L = 1,
+    M = 0,
+    T = -2,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length/Time²
 
 // Define Acceleration units (Length/Time²)
-define_unit_dimension! {
+define_units! {
     dimension Acceleration {
         base_unit: MeterPerSecondSquared = 1.0,
         units: {
-            MeterPerSecondSquared = 1.0,
             StandardGravity = 9.80665,
-        },
-        symbols: {
-            MeterPerSecondSquared = "m/s²",
-            StandardGravity = "g₀",
         }
     }
 }

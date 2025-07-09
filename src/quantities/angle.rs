@@ -55,12 +55,12 @@
 //! - Maintains precision for very small angles (milliarcseconds)
 
 use crate::{constants::*, core::*};
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Angle, 0, 0, 0, 0, 0, 0, 0); // Dimensionless
+define_quantity!(Angle, L = 0, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0); // Dimensionless
 
 // Define Angle units (dimensionless but physically important)
-define_unit_dimension! {
+define_units! {
     dimension Angle {
         base_unit: Radian = 1.0,
         units: {
@@ -69,13 +69,6 @@ define_unit_dimension! {
             Arcminute = RADIANS_PER_DEGREE / 60.0,
             Arcsecond = RADIANS_PER_DEGREE / 3600.0,
             Milliarcsecond = RADIANS_PER_DEGREE / 3_600_000.0,
-        },
-        symbols: {
-            Radian = "rad",
-            Degree = "°",
-            Arcminute = "'",
-            Arcsecond = "\"",
-            Milliarcsecond = "mas",
         }
     }
 }

@@ -36,7 +36,7 @@
 //! ```
 
 use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
 define_quantity!(Area, 2, 0, 0, 0, 0, 0, 0); // Length²
 

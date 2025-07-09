@@ -57,17 +57,15 @@
 //! - Other units → Seconds → Target unit
 //! - Maintains precision for both short and long timescales
 
-use crate::{constants::*, core::*};
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Time, 0, 0, 1, 0, 0, 0, 0); // Time
+define_quantity!(Time, L = 0, M = 0, T = 1, THETA = 0, I = 0, J = 0, N = 0); // Time
 
 // Define Time units with astronomical focus
-define_unit_dimension! {
+define_units! {
     dimension Time {
         base_unit: Second = 1.0,
         units: {
-            Second = 1.0,
             Minute = SECONDS_PER_MINUTE,
             Hour = SECONDS_PER_HOUR,
             Day = SECONDS_PER_DAY,
@@ -75,16 +73,6 @@ define_unit_dimension! {
             Kiloyear = SECONDS_PER_YEAR * 1000.0,
             Megayear = SECONDS_PER_YEAR * 1e6,
             Gigayear = SECONDS_PER_YEAR * 1e9,
-        },
-        symbols: {
-            Second = "s",
-            Minute = "min",
-            Hour = "h",
-            Day = "d",
-            Year = "yr",
-            Kiloyear = "kyr",
-            Megayear = "Myr",
-            Gigayear = "Gyr",
         }
     }
 }

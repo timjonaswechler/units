@@ -52,23 +52,15 @@
 //! All conversions use amperes as the hub unit:
 //! - Other units → Amperes → Target unit
 //! - Supports both tiny space currents and massive stellar currents
+use crate::{define_quantity, define_units};
 
-use crate::define_quantity;
-use crate::define_unit_dimension;
-use crate::core::*;
-
-define_quantity!(Current, 0, 0, 0, 0, 1, 0, 0); // Current
+define_quantity!(Current, L = 0, M = 0, T = 0, THETA = 0, I = 1, J = 0, N = 0); // Current
 
 // Define Current units
-define_unit_dimension! {
+define_units! {
     dimension Current {
         base_unit: Ampere = 1.0,
         units: {
-            Ampere = 1.0,
-
-        },
-        symbols: {
-            Ampere = "A",
 
         }
     }

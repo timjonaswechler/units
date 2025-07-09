@@ -36,7 +36,7 @@
 //! ```
 
 use crate::{constants::*, core::*};
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
 define_quantity!(AngularVelocity, 0, 0, -1, 0, 0, 0, 0); // 1/Time
 

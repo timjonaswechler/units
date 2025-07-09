@@ -48,30 +48,28 @@
 //! - Enables O(n) conversion complexity instead of O(n²)
 //! - Maintains precision through IEEE 754 double precision
 
-use crate::{constants::*, core::*, prefix::*};
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Distance, 1, 0, 0, 0, 0, 0, 0); // Length
+define_quantity!(
+    Distance,
+    L = 1,
+    M = 0,
+    T = 0,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length
 
-define_unit_dimension! {
+define_units! {
     dimension Distance {
         base_unit: Meter = 1.0,
         units: {
-            Meter = 1.0,
             AstronomicalUnit = METERS_PER_AU,
             EarthRadius = METERS_PER_EARTH_RADIUS,
             SunRadius = METERS_PER_SUN_RADIUS,
             LightYear = METERS_PER_LIGHT_YEAR,
             Parsec = METERS_PER_PARSEC,
-
-        },
-        symbols: {
-            Meter = "m",
-            AstronomicalUnit = "AU",
-            EarthRadius = "R⊕",
-            SunRadius = "R☉",
-            LightYear = "ly",
-            Parsec = "pc",
         }
     }
 }
