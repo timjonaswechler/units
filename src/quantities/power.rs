@@ -35,22 +35,27 @@
 //! println!("Red dwarf luminosity: {:.1} L☉", red_dwarf.value());
 //! ```
 
-use crate::{constants::*, core::*};
-use crate::{define_quantity, define_unit_dimension};
+use crate::features::DefaultFloat;
+use crate::{define_quantity, define_units};
 
-define_quantity!(Power, 2, 1, -3, 0, 0, 0, 0); // Mass×Length²/Time³
+// Conversion constants
+const WATTS_PER_SOLAR_LUMINOSITY: DefaultFloat = 3.828e26;
 
-// Define Power units
-define_unit_dimension! {
-    dimension Power {
-        base_unit: Watt = 1.0,
-        units: {
-            Watt = 1.0,
-            SolarLuminosity = WATTS_PER_SOLAR_LUMINOSITY,
-        },
-        symbols: {
-            Watt = "W",
-            SolarLuminosity = "L☉",
-        }
+define_quantity!(
+    Power,
+    L = 2,
+    M = 1,
+    T = -3,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Mass×Length²/Time³
+
+define_units! {
+    dimension: { L = 2, M = 1, T = -3, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: Watt = 1.0,
+    units: {
+        SolarLuminosity = WATTS_PER_SOLAR_LUMINOSITY,
     }
 }

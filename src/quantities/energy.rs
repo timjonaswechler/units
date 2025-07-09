@@ -55,25 +55,18 @@
 //! - Other units → Joules → Target unit
 //! - Maintains precision across the vast energy scale range
 
-use crate::{constants::*, core::*};
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units, features::DefaultFloat};
 
-define_quantity!(Energy, 2, 1, -2, 0, 0, 0, 0); // Mass×Length²/Time²
+const JOULES_PER_ERG: DefaultFloat = 1e-7; // 1 erg = 10⁻⁷ Joules
+const JOULES_PER_EV: DefaultFloat = 1.602176634e-19; // 1 eV = 1.602176634 × 10⁻¹⁹ Joules
 
-// Define Energy units
+define_quantity!(Energy, L = 2, M = 1, T = -2, THETA = 0, I = 0, J = 0, N = 0); // Mass×Length²/Time²
 
-define_unit_dimension! {
-    dimension Energy {
-        base_unit: Joule = 1.0,
-        units: {
-            Joule = 1.0,
-            Erg = JOULES_PER_ERG,
-            ElectronVolt = JOULES_PER_EV,
-        },
-        symbols: {
-            Joule = "J",
-            Erg = "erg",
-            ElectronVolt = "eV",
-        }
+define_units! {
+    dimension: {L = 2, M = 1, T = -2, THETA = 0, I = 0, J = 0, N = 0},
+    base_unit: Joule = 1.0,
+    units: {
+        Erg = JOULES_PER_ERG,
+        ElectronVolt = JOULES_PER_EV,
     }
 }

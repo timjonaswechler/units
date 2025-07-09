@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Electric current units for electromagnetic phenomena in stellar systems.
 //!
 //! This module provides electric current units essential for modeling stellar magnetic fields,

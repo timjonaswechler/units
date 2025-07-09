@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 use static_assertions::const_assert;
@@ -104,7 +105,7 @@ pub trait Float:
     fn is_infinite(self) -> bool;
     fn is_nan(self) -> bool;
 }
-
+#[cfg(feature = "f32")]
 impl Float for f32 {
     const EPSILON: Self = f32::EPSILON;
     const MAX: Self = f32::MAX;
@@ -163,6 +164,7 @@ impl Float for f32 {
     }
 }
 
+#[cfg(feature = "f64")]
 impl Float for f64 {
     const EPSILON: Self = f64::EPSILON;
     const MAX: Self = f64::MAX;

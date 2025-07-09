@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Density units for material properties in stellar systems.
 //!
 //! This module provides density units essential for calculating mass distributions,
@@ -35,22 +36,24 @@
 //! println!("Neutron star density: {:.2e} kg/m³", neutron_star_density.value());
 //! ```
 
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Density, -3, 1, 0, 0, 0, 0, 0); // Mass/Length³
+define_quantity!(
+    Density,
+    L = -3,
+    M = 1,
+    T = 0,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Mass/Length³
 
 // Define Density units (Mass/Length³)
-define_unit_dimension! {
-    dimension Density {
-        base_unit: KilogramPerCubicMeter = 1.0,
-        units: {
-            KilogramPerCubicMeter = 1.0,
-            GramPerCubicCentimeter = 1000.0,
-        },
-        symbols: {
-            KilogramPerCubicMeter = "kg/m³",
-            GramPerCubicCentimeter = "g/cm³",
-        }
+define_units! {
+    dimension :{L = -3, M = 1, T = 0, THETA = 0, I = 0, J = 0, N = 0},
+    base_unit: KilogramPerCubicMeter = 1.0,
+    units: {
+        GramPerCubicCentimeter = 1000.0,
     }
 }

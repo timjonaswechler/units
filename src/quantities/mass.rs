@@ -1,4 +1,6 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
+
 //! Mass units for stellar system calculations.
 //!
 //! This module provides mass units spanning from laboratory scales to stellar masses,
@@ -48,13 +50,14 @@
 //! - Other units → Kilograms → Target unit
 //! - Maintains astronomical precision while supporting SI compatibility
 use crate::composition::Prefixed;
+use crate::features::DefaultFloat;
 use crate::prefix::Kilo;
 use crate::{define_quantity, define_units};
 
 // Conversion constants to kg
-const KG_PER_GRAM: f64 = 0.001;
-const KG_PER_EARTH_MASS: f64 = 5.972e24;
-const KG_PER_SOLAR_MASS: f64 = 1.989e30;
+const KG_PER_GRAM: DefaultFloat = 0.001;
+const KG_PER_EARTH_MASS: DefaultFloat = 5.972e24;
+const KG_PER_SOLAR_MASS: DefaultFloat = 1.989e30;
 
 define_quantity!(Mass, L = 0, M = 1, T = 0, THETA = 0, I = 0, J = 0, N = 0);
 

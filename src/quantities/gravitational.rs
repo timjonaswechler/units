@@ -42,30 +42,30 @@
 //! println!("Earth system GM: {} GM⊕", earth_system.value());
 //! ```
 
-use crate::constants::*;
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::features::DefaultFloat;
+use crate::{define_quantity, define_units};
+
+// Conversion constants
+const SOLAR_GRAVITATIONAL_PARAMETER: DefaultFloat = 1.32712440042e20;
+const EARTH_GRAVITATIONAL_PARAMETER: DefaultFloat = 3.986004418e14;
 
 // Define gravitational parameter quantity (Length³/Time²)
-define_quantity!(GravitationalParameter, 3, 0, -2, 0, 0, 0, 0); // Length³/Time²
+define_quantity!(
+    GravitationalParameter,
+    L = 3,
+    M = 0,
+    T = -2,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length³/Time²
 
-// Define GravitationalParameter units
-define_unit_dimension! {
-    dimension GravitationalParameter {
-        base_unit: CubicMeterPerSecondSquared = 1.0,
-        units: {
-            CubicMeterPerSecondSquared = 1.0,
-            SolarGravitationalParameter = SOLAR_GRAVITATIONAL_PARAMETER,
-            EarthGravitationalParameter = EARTH_GRAVITATIONAL_PARAMETER,
-        },
-        symbols: {
-            CubicMeterPerSecondSquared = "m³/s²",
-            SolarGravitationalParameter = "GM☉",
-            EarthGravitationalParameter = "GM⊕",
-        }
+define_units! {
+    dimension: { L = 3, M = 0, T = -2, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: CubicMeterPerSecondSquared = 1.0,
+    units: {
+        SolarGravitationalParameter = SOLAR_GRAVITATIONAL_PARAMETER,
+        EarthGravitationalParameter = EARTH_GRAVITATIONAL_PARAMETER,
     }
 }
-
-// Convenience type aliases
-pub type SolarGM = GravitationalParameter<SolarGravitationalParameter>;
-pub type EarthGM = GravitationalParameter<EarthGravitationalParameter>;

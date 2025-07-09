@@ -35,19 +35,22 @@
 //! ```
 
 use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Frequency, 0, 0, -1, 0, 0, 0, 0); // 1/Time
+define_quantity!(
+    Frequency,
+    L = 0,
+    M = 0,
+    T = -1,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // 1/Time
 
 // Define Frequency units (1/Time)
-define_unit_dimension! {
-    dimension Frequency {
-        base_unit: Hertz = 1.0,
-        units: {
-            Hertz = 1.0,
-        },
-        symbols: {
-            Hertz = "Hz",
-        }
-    }
+define_units! {
+    dimension: { L = 0, M = 0, T = -1, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: Hertz = 1.0,
+    units: {}
 }

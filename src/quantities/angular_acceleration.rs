@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Angular acceleration units for rotational dynamics in stellar systems.
 //!
 //! This module provides angular acceleration units for modeling rotational changes
@@ -35,22 +36,30 @@
 //! println!("Tidal angular acceleration: {:.2e} °/s²", tidal_acceleration.value());
 //! ```
 
-use crate::{constants::*, core::*};
 use crate::{define_quantity, define_units};
+#[cfg(feature = "f32")]
+const RADIANS_PER_DEGREE: f32 = std::f32::consts::PI / 180.0;
+#[cfg(feature = "f64")]
+const RADIANS_PER_DEGREE: f64 = std::f64::consts::PI / 180.0;
+#[cfg(feature = "f128")]
+const RADIANS_PER_DEGREE: f128 = std::f128::consts::PI / 180.0;
 
-define_quantity!(AngularAcceleration, 0, 0, -2, 0, 0, 0, 0); // 1/Time²
+define_quantity!(
+    AngularAcceleration,
+    L = 0,
+    M = 0,
+    T = -2,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // 1/Time²
 
 // Define AngularAcceleration units (angle/time²)
-define_unit_dimension! {
-    dimension AngularAcceleration {
-        base_unit: RadianPerSecondSquared = 1.0,
-        units: {
-            RadianPerSecondSquared = 1.0,
-            DegreePerSecondSquared = RADIANS_PER_DEGREE,
-        },
-        symbols: {
-            RadianPerSecondSquared = "rad/s²",
-            DegreePerSecondSquared = "°/s²",
-        }
+define_units! {
+    dimension: {L = 0,M = 0,T = -2,THETA = 0,I = 0,J = 0,N = 0},
+    base_unit: RadianPerSecondSquared = 1.0,
+    units: {
+        DegreePerSecondSquared = RADIANS_PER_DEGREE,
     }
 }

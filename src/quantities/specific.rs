@@ -49,43 +49,50 @@
 //! println!("Solar binding energy: {:.2e} J/kg", binding_energy.value());
 //! ```
 
-use crate::constants::*;
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::features::DefaultFloat;
+use crate::{define_quantity, define_units};
+
+// Conversion constants
+const JOULES_PER_KG_PER_CAL_PER_G: DefaultFloat = 4184.0;
 
 // Specific energy (Energy/Mass) - Length²/Time²
-define_quantity!(SpecificEnergy, 2, 0, -2, 0, 0, 0, 0); // Length²/Time²
+define_quantity!(
+    SpecificEnergy,
+    L = 2,
+    M = 0,
+    T = -2,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length²/Time²
 
-define_unit_dimension! {
-    dimension SpecificEnergy {
-        base_unit: JoulePerKilogram = 1.0,
-        units: {
-            JoulePerKilogram = 1.0,
-            CaloriePerGram = JOULES_PER_KG_PER_CAL_PER_G,
-            ErgPerGram = 0.1, // 1 erg/g = 0.1 J/kg
-        },
-        symbols: {
-            JoulePerKilogram = "J/kg",
-            CaloriePerGram = "cal/g",
-            ErgPerGram = "erg/g",
-        }
+define_units! {
+    dimension: { L = 2, M = 0, T = -2, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: JoulePerKilogram = 1.0,
+    units: {
+        CaloriePerGram = JOULES_PER_KG_PER_CAL_PER_G,
+        ErgPerGram = 0.1, // 1 erg/g = 0.1 J/kg
     }
 }
 
 // Specific heat capacity (Energy/(Mass×Temperature)) - Length²/(Time²×Temperature)
-define_quantity!(SpecificHeatCapacity, 2, 0, -2, -1, 0, 0, 0); // Length²/(Time²×Temperature)
+define_quantity!(
+    SpecificHeatCapacity,
+    L = 2,
+    M = 0,
+    T = -2,
+    THETA = -1,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length²/(Time²×Temperature)
 
-define_unit_dimension! {
-    dimension SpecificHeatCapacity {
-        base_unit: JoulePerKilogramKelvin = 1.0,
-        units: {
-            JoulePerKilogramKelvin = 1.0,
-            CaloriePerGramKelvin = JOULES_PER_KG_K_PER_CAL_PER_G_K,
-        },
-        symbols: {
-            JoulePerKilogramKelvin = "J/(kg⋅K)",
-            CaloriePerGramKelvin = "cal/(g⋅K)",
-        }
+define_units! {
+    dimension: { L = 2, M = 0, T = -2, THETA = -1, I = 0, J = 0, N = 0 },
+    base_unit: JoulePerKilogramKelvin = 1.0,
+    units: {
+        CaloriePerGramKelvin = JOULES_PER_KG_PER_CAL_PER_G,
     }
 }
 
@@ -96,19 +103,22 @@ pub type SpecificEntropy<U> = SpecificHeatCapacity<U>;
 pub type SpecificGasConstant<U> = SpecificHeatCapacity<U>;
 
 // Specific volume (Volume/Mass) - Length³/Mass
-define_quantity!(SpecificVolume, 3, -1, 0, 0, 0, 0, 0); // Length³/Mass
+define_quantity!(
+    SpecificVolume,
+    L = 3,
+    M = -1,
+    T = 0,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length³/Mass
 
-define_unit_dimension! {
-    dimension SpecificVolume {
-        base_unit: CubicMeterPerKilogram = 1.0,
-        units: {
-            CubicMeterPerKilogram = 1.0,
-            CubicCentimeterPerGram = 0.001, // 1 cm³/g = 0.001 m³/kg
-        },
-        symbols: {
-            CubicMeterPerKilogram = "m³/kg",
-            CubicCentimeterPerGram = "cm³/g",
-        }
+define_units! {
+    dimension: { L = 3, M = -1, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: CubicMeterPerKilogram = 1.0,
+    units: {
+        CubicCentimeterPerGram = 0.001, // 1 cm³/g = 0.001 m³/kg
     }
 }
 

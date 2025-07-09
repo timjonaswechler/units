@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Distance and length units for stellar system calculations.
 //!
 //! This module provides a comprehensive set of distance units optimized for astronomical
@@ -48,15 +49,16 @@
 //! - Enables O(n) conversion complexity instead of O(n²)
 //! - Maintains precision through IEEE 754 double precision
 use crate::composition::Prefixed;
+use crate::features::DefaultFloat;
 use crate::prefix::Kilo;
 use crate::{define_quantity, define_units};
 
 // Conversion constants
-const METERS_PER_AU: f64 = 1.495978707e11;
-const METERS_PER_EARTH_RADIUS: f64 = 6.3781e6;
-const METERS_PER_SUN_RADIUS: f64 = 6.96e8;
-const METERS_PER_LIGHT_YEAR: f64 = 9.4607304725808e15;
-const METERS_PER_PARSEC: f64 = 3.0856775814913673e16;
+const METERS_PER_AU: DefaultFloat = 1.495978707e11;
+const METERS_PER_EARTH_RADIUS: DefaultFloat = 6.3781e6;
+const METERS_PER_SUN_RADIUS: DefaultFloat = 6.96e8;
+const METERS_PER_LIGHT_YEAR: DefaultFloat = 9.4607304725808e15;
+const METERS_PER_PARSEC: DefaultFloat = 3.0856775814913673e16;
 
 define_quantity!(
     Distance,

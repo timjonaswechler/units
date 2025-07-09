@@ -34,21 +34,23 @@
 //! println!("Solar wind particle: {:.2e} kg⋅m/s", solar_wind_momentum.value());
 //! ```
 
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
 // Additional derived quantities
-define_quantity!(Momentum, 1, 1, -1, 0, 0, 0, 0); // Mass×Length/Time
+define_quantity!(
+    Momentum,
+    L = 1,
+    M = 1,
+    T = -1,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Mass×Length/Time
 
-// Define Momentum units (Mass×Length/Time)
-define_unit_dimension! {
-    dimension Momentum {
-        base_unit: KilogramMeterPerSecond = 1.0,
-        units: {
-            KilogramMeterPerSecond = 1.0,
-        },
-        symbols: {
-            KilogramMeterPerSecond = "kg⋅m/s",
-        }
+define_units! {
+    dimension: { L = 1, M = 1, T = -1, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: KilogramMeterPerSecond = 1.0,
+    units: {
     }
 }

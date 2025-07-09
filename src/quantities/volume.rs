@@ -35,22 +35,23 @@
 //! println!("Sample in m³: {:.4} m³", sample_m3.value());
 //! ```
 
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Volume, 3, 0, 0, 0, 0, 0, 0); // Length³
+define_quantity!(
+    Volume,
+    L = 3,
+    M = 0,
+    T = 0,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length³
 
-// Define Volume units (Length³)
-define_unit_dimension! {
-    dimension Volume {
-        base_unit: CubicMeter = 1.0,
-        units: {
-            CubicMeter = 1.0,
-            Liter = 0.001,
-        },
-        symbols: {
-            CubicMeter = "m³",
-            Liter = "L",
-        }
+define_units! {
+    dimension: { L = 3, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: CubicMeter = 1.0,
+    units: {
+        Liter = 0.001,
     }
 }

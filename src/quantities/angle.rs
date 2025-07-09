@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Angular measurement units for orbital mechanics and stellar rotation.
 //!
 //! This module provides angular units essential for modeling orbital inclinations,
@@ -54,21 +55,25 @@
 //! - Other units → Radians → Target unit
 //! - Maintains precision for very small angles (milliarcseconds)
 
-use crate::{constants::*, core::*};
 use crate::{define_quantity, define_units};
+#[cfg(feature = "f32")]
+const RADIANS_PER_DEGREE: f32 = std::f32::consts::PI / 180.0;
+#[cfg(feature = "f64")]
+const RADIANS_PER_DEGREE: f64 = std::f64::consts::PI / 180.0;
+#[cfg(feature = "f128")]
+const RADIANS_PER_DEGREE: f128 = std::f128::consts::PI / 180.0;
 
 define_quantity!(Angle, L = 0, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0); // Dimensionless
 
 // Define Angle units (dimensionless but physically important)
 define_units! {
-    dimension Angle {
-        base_unit: Radian = 1.0,
-        units: {
-            Radian = 1.0,
-            Degree = RADIANS_PER_DEGREE,
-            Arcminute = RADIANS_PER_DEGREE / 60.0,
-            Arcsecond = RADIANS_PER_DEGREE / 3600.0,
-            Milliarcsecond = RADIANS_PER_DEGREE / 3_600_000.0,
-        }
+    dimension:{L = 0, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0},
+    base_unit: Radian = 1.0,
+    units: {
+        Degree = RADIANS_PER_DEGREE,
+        Arcminute = RADIANS_PER_DEGREE / 60.0,
+        Arcsecond = RADIANS_PER_DEGREE / 3600.0,
+        Milliarcsecond = RADIANS_PER_DEGREE / 3_600_000.0,
     }
+
 }

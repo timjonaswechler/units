@@ -101,7 +101,7 @@ macro_rules! define_units {
             }
         )*
     };
-    
+
     // Short tuple syntax
     (
         dimension: { $l:expr, $m:expr, $t:expr, $theta:expr, $i:expr, $j:expr, $n:expr },

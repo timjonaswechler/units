@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Acceleration units for stellar system dynamics and orbital mechanics.
 //!
 //! This module provides acceleration units essential for calculating gravitational effects,

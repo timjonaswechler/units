@@ -65,27 +65,28 @@
 //! - Other units → Watts → Target unit
 //! - Maintains precision across enormous luminosity ranges
 
-use crate::define_quantity;
-use crate::define_unit_dimension;
-use crate::{constants::*, core::*};
+use crate::features::DefaultFloat;
+use crate::{define_quantity, define_units};
 
-define_quantity!(Luminosity, 2, 1, -3, 0, 0, 0, 0); // ML²T⁻³
+// Conversion constants
+const WATTS_PER_SOLAR_LUMINOSITY: DefaultFloat = 3.828e26;
 
-// Define Luminosity units (reusing Power infrastructure)
-define_unit_dimension! {
-    dimension Luminosity {
-        base_unit: LuminosityWatt = 1.0,
-        units: {
-            LuminosityWatt = 1.0,
-            SolarLuminosityUnit = WATTS_PER_SOLAR_LUMINOSITY,
-            ErgPerSecond = 1e-7, // 1 erg/s = 1e-7 W
+define_quantity!(
+    Luminosity,
+    L = 2,
+    M = 1,
+    T = -3,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // ML²T⁻³
 
-        },
-        symbols: {
-            LuminosityWatt = "W",
-            SolarLuminosityUnit = "L☉",
-            ErgPerSecond = "erg/s",
-
-        }
+define_units! {
+    dimension: { L = 2, M = 1, T = -3, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: Watt = 1.0,
+    units: {
+        SolarLuminosity = WATTS_PER_SOLAR_LUMINOSITY,
+        ErgPerSecond = 1e-7, // 1 erg/s = 1e-7 W
     }
 }

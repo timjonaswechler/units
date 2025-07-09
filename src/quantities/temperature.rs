@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 //! Temperature units for stellar and planetary thermal modeling.
 //!
 //! This module provides temperature units essential for modeling stellar atmospheres,

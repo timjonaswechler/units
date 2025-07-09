@@ -52,25 +52,30 @@
 //! println!("Wavelength check: {:.0} nm", wavelength_m * 1e9);
 //! ```
 
-use crate::constants::*;
-use crate::core::*;
-use crate::{define_quantity, define_unit_dimension};
+use crate::features::DefaultFloat;
+use crate::{define_quantity, define_units};
+
+// Physical constants
+const SPEED_OF_LIGHT: DefaultFloat = 299792458.0; // m/s
+const PLANCK_CONSTANT: DefaultFloat = 6.62607015e-34; // J⋅s
 
 // Wavelength is just Distance, but we define it separately for clarity
-define_quantity!(Wavelength, 1, 0, 0, 0, 0, 0, 0); // Length
+define_quantity!(
+    Wavelength,
+    L = 1,
+    M = 0,
+    T = 0,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length
 
-// Define Wavelength units with spectral focus
-define_unit_dimension! {
-    dimension Wavelength {
-        base_unit: WavelengthMeter = 1.0,
-        units: {
-            WavelengthMeter = 1.0,
-            Angstrom = 1e-10,
-        },
-        symbols: {
-            WavelengthMeter = "m",
-            Angstrom = "Å",
-        }
+define_units! {
+    dimension: { L = 1, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: WavelengthMeter = 1.0,
+    units: {
+        Angstrom = 1e-10,
     }
 }
 
@@ -78,51 +83,21 @@ define_unit_dimension! {
 // We'll extend the existing Frequency dimension
 
 // Wavenumber (1/Length) - common in spectroscopy
-define_quantity!(Wavenumber, -1, 0, 0, 0, 0, 0, 0); // 1/Length
+define_quantity!(
+    Wavenumber,
+    L = -1,
+    M = 0,
+    T = 0,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // 1/Length
 
-define_unit_dimension! {
-    dimension Wavenumber {
-        base_unit: PerMeter = 1.0,
-        units: {
-            PerMeter = 1.0,
-            PerAngstrom = 1e10,
-        },
-        symbols: {
-            PerMeter = "m⁻¹",
-            PerAngstrom = "Å⁻¹",
-        }
+define_units! {
+    dimension: { L = -1, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: PerMeter = 1.0,
+    units: {
+        PerAngstrom = 1e10,
     }
-}
-
-// Photon energy is Energy, but useful for spectral calculations
-// We can use the existing Energy dimension
-
-// Convenience functions for spectral calculations
-impl Wavelength<WavelengthMeter> {
-    /// Calculate frequency from wavelength using c = λν
-    pub fn to_frequency(&self) -> f64 {
-        SPEED_OF_LIGHT / self.to_si()
-    }
-
-    /// Calculate photon energy from wavelength using E = hc/λ
-    pub fn to_photon_energy(&self) -> f64 {
-        PLANCK_CONSTANT * SPEED_OF_LIGHT / self.to_si()
-    }
-}
-
-// Helper functions for spectral conversions
-pub fn wavelength_to_frequency(wavelength_m: f64) -> f64 {
-    SPEED_OF_LIGHT / wavelength_m
-}
-
-pub fn frequency_to_wavelength(frequency_hz: f64) -> f64 {
-    SPEED_OF_LIGHT / frequency_hz
-}
-
-pub fn wavelength_to_photon_energy(wavelength_m: f64) -> f64 {
-    PLANCK_CONSTANT * SPEED_OF_LIGHT / wavelength_m
-}
-
-pub fn photon_energy_to_wavelength(energy_j: f64) -> f64 {
-    PLANCK_CONSTANT * SPEED_OF_LIGHT / energy_j
 }

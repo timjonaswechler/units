@@ -60,31 +60,24 @@
 //! All conversions use meters per second as the hub unit:
 //! - Other units → m/s → Target unit
 
-use crate::{
-    core::*,
-    quantities::{Distance, Meter, Second, Time},
-};
-use crate::{define_quantity, define_unit_dimension};
+use crate::quantities::{Distance, Meter, Second, Time};
+use crate::{define_quantity, define_units};
 
-define_quantity!(Velocity, 1, 0, -1, 0, 0, 0, 0); // Length/Time
+define_quantity!(
+    Velocity,
+    L = 1,
+    M = 0,
+    T = -1,
+    THETA = 0,
+    I = 0,
+    J = 0,
+    N = 0
+); // Length/Time
 
-// Define Velocity units (Length/Time)
-define_unit_dimension! {
-    dimension Velocity {
-        base_unit: MeterPerSecond = 1.0,
-        units: {
-            MeterPerSecond = 1.0,
-            KilometerPerHour = 1000.0 / 3600.0,
-        },
-        symbols: {
-            MeterPerSecond = "m/s",
-            KilometerPerHour = "km/h",
-        }
+define_units! {
+    dimension: { L = 1, M = 0, T = -1, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: MeterPerSecond = 1.0,
+    units: {
+
     }
-}
-
-// Common unit operations using dimensional arithmetic
-// Distance / Time = Velocity (the result is automatically typed correctly)
-pub fn calculate_velocity(distance: Distance<Meter>, time: Time<Second>) -> Velocity<Meter> {
-    distance / time
 }
