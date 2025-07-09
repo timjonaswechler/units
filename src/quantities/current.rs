@@ -58,10 +58,9 @@ define_quantity!(Current, L = 0, M = 0, T = 0, THETA = 0, I = 1, J = 0, N = 0); 
 
 // Define Current units
 define_units! {
-    dimension Current {
-        base_unit: Ampere = 1.0,
-        units: {
+    dimension:{ L = 0, M = 0, T = 0, THETA = 0, I = 1, J = 0, N = 0},
+    base_unit: Ampere = 1.0,
+    units: {
 
-        }
     }
 }

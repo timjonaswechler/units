@@ -14,6 +14,7 @@ macro_rules! define_quantity {
             quantity: crate::core::Quantity<U, V>,
         }
 
+
         impl<U, V> $name<U, V>
         where
             U: crate::core::Dimension + crate::core::UnitScale,
@@ -60,18 +61,24 @@ macro_rules! define_prefix {
 
 #[macro_export]
 macro_rules! define_units {
+    // Named dimensions syntax
     (
-        dimension $dim_name:ident {
-            base_unit: $base:ident = $base_scale:expr,
-            units: {
-                $($unit:ident = $scale:expr),* $(,)?
-            }
+        dimension: { L = $l:expr, M = $m:expr, T = $t:expr, THETA = $theta:expr, I = $i:expr, J = $j:expr, N = $n:expr },
+        base_unit: $base:ident = $base_scale:expr,
+        units: {
+            $($unit:ident = $scale:expr),* $(,)?
         }
     ) => {
         // Basis-Unit definieren
         pub struct $base;
         impl crate::core::Dimension for $base {
-            // Dimensionen werden automatisch aus dem Kontext abgeleitet
+            const L: i8 = $l;
+            const M: i8 = $m;
+            const T: i8 = $t;
+            const THETA: i8 = $theta;
+            const I: i8 = $i;
+            const J: i8 = $j;
+            const N: i8 = $n;
         }
         impl crate::core::UnitScale for $base {
             const SCALE: f64 = $base_scale;
@@ -81,7 +88,54 @@ macro_rules! define_units {
         $(
             pub struct $unit;
             impl crate::core::Dimension for $unit {
-                // Gleiche Dimensionen wie Basis-Unit
+                const L: i8 = $l;
+                const M: i8 = $m;
+                const T: i8 = $t;
+                const THETA: i8 = $theta;
+                const I: i8 = $i;
+                const J: i8 = $j;
+                const N: i8 = $n;
+            }
+            impl crate::core::UnitScale for $unit {
+                const SCALE: f64 = $scale;
+            }
+        )*
+    };
+    
+    // Short tuple syntax
+    (
+        dimension: { $l:expr, $m:expr, $t:expr, $theta:expr, $i:expr, $j:expr, $n:expr },
+        base_unit: $base:ident = $base_scale:expr,
+        units: {
+            $($unit:ident = $scale:expr),* $(,)?
+        }
+    ) => {
+        // Basis-Unit definieren
+        pub struct $base;
+        impl crate::core::Dimension for $base {
+            const L: i8 = $l;
+            const M: i8 = $m;
+            const T: i8 = $t;
+            const THETA: i8 = $theta;
+            const I: i8 = $i;
+            const J: i8 = $j;
+            const N: i8 = $n;
+        }
+        impl crate::core::UnitScale for $base {
+            const SCALE: f64 = $base_scale;
+        }
+
+        // Weitere Units definieren
+        $(
+            pub struct $unit;
+            impl crate::core::Dimension for $unit {
+                const L: i8 = $l;
+                const M: i8 = $m;
+                const T: i8 = $t;
+                const THETA: i8 = $theta;
+                const I: i8 = $i;
+                const J: i8 = $j;
+                const N: i8 = $n;
             }
             impl crate::core::UnitScale for $unit {
                 const SCALE: f64 = $scale;

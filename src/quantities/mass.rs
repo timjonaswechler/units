@@ -51,18 +51,22 @@ use crate::composition::Prefixed;
 use crate::prefix::Kilo;
 use crate::{define_quantity, define_units};
 
+// Conversion constants to kg
+const KG_PER_GRAM: f64 = 0.001;
+const KG_PER_EARTH_MASS: f64 = 5.972e24;
+const KG_PER_SOLAR_MASS: f64 = 1.989e30;
+
 define_quantity!(Mass, L = 0, M = 1, T = 0, THETA = 0, I = 0, J = 0, N = 0);
 
 // Define Mass units with astronomical focus
 // Note: Using Gram as base unit to avoid confusion with prefix system
 // Kilogram will be available as Prefixed<Kilo, Gram>
 define_units! {
-    dimension Mass {
-        base_unit: Gram = KG_PER_GRAM,
-        units: {
-            EarthMass = KG_PER_EARTH_MASS,
-            SolarMass = KG_PER_SOLAR_MASS,
-        }
+    dimension: { L = 0, M = 1, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
+    base_unit: Gram = KG_PER_GRAM,
+    units: {
+        EarthMass = KG_PER_EARTH_MASS,
+        SolarMass = KG_PER_SOLAR_MASS,
     }
 }
 
