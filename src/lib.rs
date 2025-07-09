@@ -4,7 +4,6 @@ mod features;
 mod macros;
 mod prefix;
 mod quantities;
-mod units;
 
 pub mod test_example;
 
