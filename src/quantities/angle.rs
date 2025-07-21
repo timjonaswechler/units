@@ -9,11 +9,10 @@ const RADIANS_PER_DEGREE: f64 = std::f64::consts::PI / 180.0;
 #[cfg(feature = "f128")]
 const RADIANS_PER_DEGREE: f128 = std::f128::consts::PI / 180.0;
 
-define_quantity!(Angle, L = 0, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0); // Dimensionless
+define_quantity!(Angle); // Dimensionless
 
 // Define Angle units (dimensionless but physically important)
 define_units! {
-    dimension:{L = 0, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0},
     base_unit: Radian = 1.0,
     units: {
         Degree = RADIANS_PER_DEGREE,

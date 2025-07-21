@@ -1,6 +1,4 @@
-use crate::composition::Prefix;
 use crate::define_prefix;
-use crate::features::DefaultFloat;
 define_prefix!(Yotta, 1e24);
 define_prefix!(Zetta, 1e21);
 define_prefix!(Exa, 1e18);

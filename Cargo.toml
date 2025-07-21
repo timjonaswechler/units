@@ -27,32 +27,11 @@ serde = { version = "1.0", optional = true }
 paste = "1.0"
 
 [features]
-default = ["f64", "precision-6"]
+default = ["f64"]
 
 # Value type selection (mutually exclusive)
 f32 = []
 f64 = []
-f128 = []
-
-# Precision configuration
-precision-3 = []
-precision-6 = []
-precision-9 = []
-precision-12 = []
-
-# Display styles
-compact = []
-verbose = []
-scientific = []
-
-# Domain profiles (don't inherit defaults)
-game = ["f32", "precision-3", "compact"]
-science = ["f64", "precision-9", "scientific"]
-physics = ["f128", "precision-12", "verbose"]
-
-# Individual feature tests should disable defaults
-test-f32 = ["f32"]
-test-f64 = ["f64"]
 
 
 # Optional features

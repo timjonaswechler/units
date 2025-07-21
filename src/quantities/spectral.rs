@@ -8,19 +8,9 @@ const SPEED_OF_LIGHT: DefaultFloat = 299792458.0; // m/s
 const PLANCK_CONSTANT: DefaultFloat = 6.62607015e-34; // J⋅s
 
 // Wavelength is just Distance, but we define it separately for clarity
-define_quantity!(
-    Wavelength,
-    L = 1,
-    M = 0,
-    T = 0,
-    THETA = 0,
-    I = 0,
-    J = 0,
-    N = 0
-); // Length
+define_quantity!(Wavelength); // Length
 
 define_units! {
-    dimension: { L = 1, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
     base_unit: WavelengthMeter = 1.0,
     units: {
         Angstrom = 1e-10,
@@ -31,19 +21,9 @@ define_units! {
 // We'll extend the existing Frequency dimension
 
 // Wavenumber (1/Length) - common in spectroscopy
-define_quantity!(
-    Wavenumber,
-    L = -1,
-    M = 0,
-    T = 0,
-    THETA = 0,
-    I = 0,
-    J = 0,
-    N = 0
-); // 1/Length
+define_quantity!(Wavenumber); // 1/Length
 
 define_units! {
-    dimension: { L = -1, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
     base_unit: PerMeter = 1.0,
     units: {
         PerAngstrom = 1e10,

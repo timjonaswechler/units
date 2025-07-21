@@ -1,16 +1,18 @@
-mod arithmetic;
-mod composition;
-mod core;
-mod features;
-mod macros;
-mod prefix;
-pub mod quantities;
+pub(crate) mod composition;
+pub(crate) mod features;
+pub(crate) mod macros;
+pub(crate) mod prefix;
+pub(crate) mod quantities;
 
-pub mod test_example;
-pub mod test_dimensional_validation;
+// Re-export macros (they are already exported at crate root by #[macro_export])
 
 pub mod prelude {
-    use crate::composition::Prefixed;
-    use crate::define_prefix;
-    use crate::define_quantity;
+    pub use crate::composition::Exponent;
+    pub use crate::composition::Per;
+    pub use crate::composition::Prefixed;
+    // use crate::define_prefix;
+    // use crate::define_quantity;
+    // use crate::define_units;
+    pub use crate::prefix::*;
+    pub use crate::quantities::*;
 }

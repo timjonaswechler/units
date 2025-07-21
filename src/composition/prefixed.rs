@@ -1,13 +1,21 @@
-use crate::define_prefix;
-use crate::{core::UnitScale, features::DefaultFloat};
-use std::marker::PhantomData;
+use crate::composition::unit::UnitScale;
 
-pub struct Prefixed<P, U>(PhantomData<(P, U)>);
-
-pub(crate) trait Prefix {
-    const FACTOR: DefaultFloat;
+pub trait PrefixScale {
+    fn factor() -> f64;
 }
 
-impl<P: Prefix, U: UnitScale> UnitScale for Prefixed<P, U> {
-    const SCALE: DefaultFloat = P::FACTOR * U::SCALE;
+// Prefixed unit wrapper
+pub struct Prefixed<Prefix, Unit> {
+    _prefix: std::marker::PhantomData<Prefix>,
+    _unit: std::marker::PhantomData<Unit>,
+}
+
+impl<Prefix, Unit> UnitScale for Prefixed<Prefix, Unit>
+where
+    Prefix: PrefixScale,
+    Unit: UnitScale,
+{
+    fn scale() -> f64 {
+        Prefix::factor() * Unit::scale()
+    }
 }

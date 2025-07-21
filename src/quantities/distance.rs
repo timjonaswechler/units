@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use crate::features::DefaultFloat;
+use crate::prelude::{Kilo, Prefixed};
 use crate::{define_quantity, define_units};
 
 // Conversion constants
@@ -10,19 +11,9 @@ const METERS_PER_SUN_RADIUS: DefaultFloat = 6.96e8;
 const METERS_PER_LIGHT_YEAR: DefaultFloat = 9.4607304725808e15;
 const METERS_PER_PARSEC: DefaultFloat = 3.0856775814913673e16;
 
-define_quantity!(
-    Distance,
-    L = 1,
-    M = 0,
-    T = 0,
-    THETA = 0,
-    I = 0,
-    J = 0,
-    N = 0
-); // Length
+define_quantity!(Distance); // Length
 
 define_units! {
-    dimension: { L = 1, M = 0, T = 0, THETA = 0, I = 0, J = 0, N = 0 },
     base_unit: Meter = 1.0,
     units: {
         AstronomicalUnit = METERS_PER_AU,
@@ -33,6 +24,4 @@ define_units! {
     }
 }
 
-// ================================================================================================
-// CONVENIENCE TYPE ALIASES FOR COMMON PREFIXED UNITS
-// ================================================================================================
+pub type Kilometer = Prefixed<Kilo, Meter>;
