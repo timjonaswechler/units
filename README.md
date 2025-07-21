@@ -1,161 +1,156 @@
-# Physics Units
+# Physics Units System
 
-A type-safe, high-performance unit system with dimensional analysis for scientific computing.
+A type-safe, ergonomic unit system for physical calculations in Rust with automatic SI conversions and precision control.
 
-## 🌟 Features
+## Features
 
-- **🚀 Hub-and-Spoke Conversions**: O(n) complexity instead of O(n²)
-- **🛡️ Compile-Time Dimensional Safety**: Prevents unit mixing errors at compile time
-- **🏭 Macro-Generated Boilerplate**: Minimal code required for adding new units
-- **🎯 Astronomy-Focused Design**: Built specifically for stellar simulation with astronomical units
-- **🔧 Variadic Syntax**: Experimental support for flexible multi-unit syntax
-- **⚡ High Performance**: Zero-cost abstractions with minimal runtime overhead
+- **Type Safety**: Units are checked at compile time, preventing mixing incompatible quantities
+- **Ergonomic API**: Clean, readable syntax with no boilerplate
+- **Flexible Units**: Support for SI base units, prefixed units, and compound units
+- **Precision Control**: Built-in rounding and truncation methods
+- **Zero Runtime Cost**: All unit information is encoded in types
 
-## 🚀 Quick Start
-
-Add this to your `Cargo.toml`:
-
-```toml
-[dependencies]
-physics-units = "0.1.0"
-```
-
-### Basic Usage
+## Quick Start
 
 ```rust
-use physics_units::*;
+use units::features::DefaultFloat;
+use units::prelude::*;
+use units::{define_quantity, define_units};
 
-// Create quantities with specific units
-let distance = Distance::<AstronomicalUnit>::new(1.5);
-let mass = Mass::<SolarMass>::new(0.7);
-let time = Time::<Gigayear>::new(6.0);
+// Conversion constants
+const METERS_PER_AU: DefaultFloat = 1.495978707e11;
+const METERS_PER_EARTH_RADIUS: DefaultFloat = 6.3781e6;
+const METERS_PER_SUN_RADIUS: DefaultFloat = 6.96e8;
+const METERS_PER_LIGHT_YEAR: DefaultFloat = 9.4607304725808e15;
+const METERS_PER_PARSEC: DefaultFloat = 3.0856775814913673e16;
 
-// Convert between units using hub-and-spoke conversion
-let distance_meters = distance.convert_to::<Meter>();
-let mass_earth = mass.convert_to::<EarthMass>();
+define_quantity!(Distance); // Length
 
-// Type-safe arithmetic operations
-let total_distance = distance + Distance::<AstronomicalUnit>::new(0.5);
-let velocity = distance / time;
+define_units! {
+    base_unit: Meter = 1.0,
+    units: {
+        AstronomicalUnit = METERS_PER_AU,
+        EarthRadius = METERS_PER_EARTH_RADIUS,
+        SunRadius = METERS_PER_SUN_RADIUS,
+        LightYear = METERS_PER_LIGHT_YEAR,
+        Parsec = METERS_PER_PARSEC,
+    }
+}
 
-// Display with proper symbols
-println!("Distance: {}", distance); // "1.5 AU"
-println!("Mass: {}", mass);         // "0.7 M☉"
-println!("Velocity: {}", velocity); // "0.25 AU/Gyr"
+pub type Kilometer = Prefixed<Kilo, Meter>;
+
+// Use the units
+let distance: Distance<Meter> = Distance::new(1500.0);
+let distance_km: Distance<Kilometer> = Distance::new(1.5);
+
+// Both represent the same physical quantity
+assert_eq!(distance.si(), 1500.0);  // 1500 m
+assert_eq!(distance_km.si(), 1500.0); // 1.5 km = 1500 m
+
+// Compound units
+let velocity: Velocity<(Kilometer, Per<Hour>)> = Velocity::new(100.0);
+assert_eq!(velocity.si_rounded(1), 27.8); // 100 km/h = 27.8 m/s
 ```
 
-### Astronomy-Focused Units
+## Core Concepts
+
+### Physical Quantities
+Define type-safe wrappers for physical measurements:
+```rust
+define_quantity!(Mass);
+define_quantity!(Power);
+define_quantity!(Energy);
+```
+
+### Units and Prefixes
+```rust
+// Metric prefixes
+define_prefix!(Kilo, 1000.0);
+define_prefix!(Milli, 0.001);
+
+const KG_PER_GRAM: f32 = 0.001;
+const KG_PER_EARTH_MASS: f32 = 5.972e24;
+const KG_PER_SOLAR_MASS: f32 = 1.989e30;
+
+define_quantity!(Mass);
+
+// Define Mass units with astronomical focus
+// Note: Using Gram as base unit to avoid confusion with prefix system
+// Kilogram will be available as Prefixed<Kilo, Gram>
+define_units! {
+    base_unit: Gram = KG_PER_GRAM,
+    units: {
+        EarthMass = KG_PER_EARTH_MASS,
+        SolarMass = KG_PER_SOLAR_MASS,
+    }
+}
+```
+
+### Flexible Unit Combinations
+```rust
+// Prefixed units
+Distance<Prefixed<Kilo, Meter>>     // Kilometer
+Power<Prefixed<Mega, Watt>>         // Megawatt
+
+// Compound units
+Velocity<(Meter, Per<Second>)>      // m/s
+Acceleration<(Meter, Per<Exponent<Second, 2>>)>  // m/s²
+```
+
+## Precision Control
+
+Get values with specified decimal precision:
 
 ```rust
-use physics_units::*;
+let velocity: Velocity<(Kilometer, Per<Hour>)> = Velocity::new(100.0);
 
-// Stellar distances
-let proxima_distance = Distance::<Parsec>::new(1.3);
-let galactic_center = Distance::<KiloParsec>::new(8.2);
+// SI conversions with precision
+velocity.si()              // 27.77777777777778
+velocity.si_rounded(2)     // 27.78
+velocity.si_truncated(1)   // 27.7
 
-// Stellar masses and radii  
-let star_mass = Mass::<SolarMass>::new(1.4);
-let planet_mass = Mass::<EarthMass>::new(0.8);
-let star_radius = Distance::<SunRadius>::new(1.2);
-
-// Stellar evolution timescales
-let main_sequence_lifetime = Time::<Gigayear>::new(10.0);
-let stellar_luminosity = Power::<SolarLuminosity>::new(2.5);
+// Original values with precision
+let distance: Distance<Meter> = Distance::new(12.3456789);
+distance.value_rounded(2)    // 12.35
+distance.value_truncated(3)  // 12.345
 ```
 
-### Variadic Multi-Unit Syntax (Experimental)
+## API Reference
 
-```rust
-use physics_units::variadic::*;
+### Core Methods
+- `.value()` - Get value in original units
+- `.si()` - Get value in SI base units
+- `.si_rounded(n)` - SI value rounded to n decimal places
+- `.si_truncated(n)` - SI value truncated to n decimal places
+- `.value_rounded(n)` - Original value rounded to n decimal places
+- `.value_truncated(n)` - Original value truncated to n decimal places
 
-// Intuitive multi-unit syntax
-let velocity = Velocity::<Meter, Second>::new(10.0);           // 10 m/s
-let acceleration = Acceleration::<Meter, Second>::new(9.81);   // 9.81 m/s²  
-let force = Force::<Kilogram, Meter, Second>::new(98.1);       // 98.1 kg⋅m/s²
-let energy = Energy::<Kilogram, Meter, Second>::new(500.0);    // 500 kg⋅m²/s²
+### Composition Types
+- `Per<Unit>` - Inverse units (1/Unit)
+- `Prefixed<Prefix, Unit>` - Metric prefixes
+- `Exponent<Unit, N>` - Unit powers (Unit^N)
+- `(Unit1, Unit2)` - Unit multiplication
 
-// Works with prefixed units too
-let speed_kmh = Velocity::<Prefixed<Kilo, Meter>, Hour>::new(100.0); // 100 km/h
+## Design Philosophy
+
+This library prioritizes:
+1. **Compile-time safety** over runtime flexibility
+2. **Ergonomic syntax** over complex type systems
+3. **Clear documentation** in code through readable unit types
+4. **Practical usability** for scientific computing
+
+## ToDo
+- [ ] Create tests for all defined units and quantities calculate their SI equivalents
+- [ ] Add more Unit-Tupel combinations
+- [ ] Check if Watt can be described as Joule/Second and with SI units
+- [ ] Test if a Unit-Ristriction can be implemented to prevent mixing incompatible units
+- [ ] Test if there is a way to implement to dynamicly change defined prefixes
+- [ ] Change current precision control to a rust crate feature
+- [ ] Add more examples to the documentation
+- [ ] Add unit String output for all defined units if a variable is printed e.g. `println!("{:?}", distance);` should print `Distance<Meter>(1500.0 m)` or `1500.0 m`
+
+
+## License
+
+Licensed under [MIT license](LICENSE).
 ```
-
-## 🏗️ Architecture
-
-### Hub-and-Spoke Conversions
-
-Traditional unit systems require O(n²) conversion implementations. This system uses SI units as a conversion hub, reducing complexity to O(n):
-
-- **Traditional**: 6 units × 6 units = 36 conversion functions  
-- **Hub-and-spoke**: 6 units × 2 conversions each = 12 conversion functions
-- **Adding units**: O(1) instead of O(n) new conversions required
-
-### Compile-Time Dimensional Safety
-
-The system tracks physical dimensions at compile time, preventing unit mixing errors:
-
-```rust,compile_fail
-let distance = Distance::<Meter>::new(100.0);
-let mass = Mass::<Kilogram>::new(5.0);
-let invalid = distance + mass; // Compile error!
-```
-
-### Prefix System
-
-Avoid combinatorial explosion with a generic prefix system:
-
-```rust
-use physics_units::*;
-
-let distance = Distance::<Prefixed<Kilo, Meter>>::new(5.0); // 5 km
-let mass = Mass::<Prefixed<Mega, Gram>>::new(2.0);          // 2 Mg  
-let time = Time::<Prefixed<Micro, Second>>::new(100.0);     // 100 μs
-```
-
-## 📚 Available Units
-
-### Distance/Length
-- **Meter** (`m`) - SI base unit
-- **AstronomicalUnit** (`AU`) - Earth-Sun distance  
-- **LightYear** (`ly`) - Distance light travels in one year
-- **Parsec** (`pc`) - Parallax arcsecond
-- **EarthRadius** (`R⊕`) - Mean radius of Earth
-- **SunRadius** (`R☉`) - Mean radius of the Sun
-
-### Mass
-- **Kilogram** (`kg`) - SI base unit
-- **Gram** (`g`) - Common metric unit
-- **EarthMass** (`M⊕`) - Mass of Earth
-- **SolarMass** (`M☉`) - Mass of the Sun
-
-### Time  
-- **Second** (`s`) - SI base unit
-- **Hour** (`h`), **Day** (`d`), **Year** (`yr`)
-- **Megayear** (`Myr`), **Gigayear** (`Gyr`) - Stellar evolution timescales
-
-### Power/Luminosity
-- **Watt** (`W`) - SI base unit
-- **SolarLuminosity** (`L☉`) - Luminosity of the Sun
-
-### Temperature
-- **Kelvin** (`K`) - SI base unit
-- **Celsius** (`°C`), **Fahrenheit** (`°F`)
-
-## 🔬 Examples
-
-See the `examples/` directory for comprehensive usage examples:
-
-- `basic_usage.rs` - Fundamental operations and conversions
-- `astronomical_calculations.rs` - Stellar system modeling  
-- `variadic_syntax.rs` - Multi-unit syntax demonstrations
-
-## 🤝 Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📄 License
-
-This project is licensed under either of
-
-- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
-at your option.
