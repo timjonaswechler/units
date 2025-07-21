@@ -145,7 +145,7 @@ This library prioritizes:
 - [ ] Check if Watt can be described as Joule/Second and with SI units
 - [ ] Test if a Unit-Ristriction can be implemented to prevent mixing incompatible units
 - [ ] Test if there is a way to implement to dynamicly change defined prefixes
-- [ ] Change current presision control to a rust crate feature
+- [ ] Change current precision control to a rust crate feature
 - [ ] Add more examples to the documentation
 - [ ] Add unit String output for all defined units if a variable is printed e.g. `println!("{:?}", distance);` should print `Distance<Meter>(1500.0 m)` or `1500.0 m`
 
