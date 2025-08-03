@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Read(*)",
+      "Update(**/*.md",
+      "Update(**/*.rs",
+      "Bash(cagro :*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo test)",
+      "Bash(cargo test:*)",
+      "Bash(cargo run:*)",
+      "Bash(mv:*)",
+      "Writw(*)",
+      "Update(*)"
+    ],
+    "deny": []
+  }
+}

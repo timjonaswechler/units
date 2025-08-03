@@ -104,7 +104,20 @@ name = "units"
 version = "0.1.0"
 dependencies = [
  "paste",
+ "proc-macro2",
+ "quote",
  "serde",
  "serde_json",
  "static_assertions",
+ "syn",
+ "units-macros",
+]
+
+[[package]]
+name = "units-macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]

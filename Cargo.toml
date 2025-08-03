@@ -25,6 +25,10 @@ categories = ["science", "mathematics"]
 static_assertions = "1.1"
 serde = { version = "1.0", optional = true }
 paste = "1.0"
+units-macros = { path = "units-macros" }
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
 
 [features]
 default = ["f64"]

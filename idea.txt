@@ -1,0 +1,17 @@
+let force = unit!(Force, Newton, 100);
+let area = unit!(Area, Exponent<Meter,2>, 4);
+let pressure = force / area; // Compiler erkennt: Force/Area = Pressure!
+// pressure ist automatisch vom Typ Pressure (Pascal)
+
+let pressure2 = unit!(Pressure, Prefix<Kilo,Pascal>, force / area); // pressure2 ist automatisch vom Typ Pressure (Kilopascal)
+// es wird geprüft ob force / area eine Einheit ergibt, die mit Pressure kompatibel ist
+// und es wird automatisch die Umwandlung von Pascal nach Kilopascal durchgeführt
+
+let work = unit!(Work, Joule, 1000);
+let work2 = unit!(Work, (Newton,Meter),1000); // work2 ist automatisch vom Typ Work (Joule)
+let work3 = unit!(Work, (Kilogram,Exponent<Meter,2>, Pre<Exponent<Second,2>>), 1000); // work3 ist automatisch vom Typ Work (Joule)
+let work4 = unit!(Work, (Prefix<Kilo,Gram>,Exponent<Meter,2>, Pre<Exponent<Second,2>>), 1000); // work4 ist automatisch vom Typ Work (Joule)
+let work5 = unit!(Work, (Prefix<Mega,Prefix<Kilo,Gram>,Exponent<Meter,2>, Pre<Exponent<Second,2>>>), 1000); // work5 ist automatisch vom Typ Work (MegaJoule)
+let work6 = unit!(Work, (Prefix<Mega,Gram>,Exponent<Meter,2>, Pre<Exponent<Second,2>>), 1000); // work6 ist automatisch vom Typ Work (KiloJoule)
+
+let force2 = work6 / unit!(Length, Meter, 10); // force2 ist automatisch vom Typ Force (KiloNewton)
