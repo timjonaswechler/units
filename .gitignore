@@ -20,6 +20,7 @@ Thumbs.db
 *~
 *.orig
 *.rej
+.*
 
 # Lock files (optional - can be included for applications)
 # Cargo.lock
