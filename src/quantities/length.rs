@@ -13,6 +13,8 @@ impl Quantity for Length {
     const NAME: &'static str = "Length";
 }
 
+impl crate::quantity::CanAddSameQuantity for Length {}
+
 // ============================================================================
 // SI Base Unit
 // ============================================================================

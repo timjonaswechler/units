@@ -57,6 +57,13 @@ pub trait TemperatureDifferenceQuantity: Quantity {}
 /// - Can add/subtract difference to/from absolute temperature
 pub trait AbsoluteTemperatureQuantity: Quantity {}
 
+/// Marker trait for quantities that can be added to themselves
+///
+/// Most quantities can be added (Length + Length, Time + Time, etc.)
+/// but absolute temperatures cannot be added together.
+/// This trait enables the generic Add/Sub implementations.
+pub trait CanAddSameQuantity: Quantity {}
+
 #[cfg(test)]
 mod tests {
     use super::*;

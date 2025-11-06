@@ -43,4 +43,9 @@ pub mod prelude {
     pub use crate::quantities::length::{Length, Meter, Kilometer, Centimeter, Millimeter};
     pub use crate::quantities::time::{Time, Second, Minute, Hour};
     pub use crate::quantities::mass::{Mass, Kilogram, Gram};
+    pub use crate::quantities::temperature::{
+        AbsoluteTemperature, TemperatureDifference,
+        Kelvin, Celsius, Fahrenheit,
+        KelvinDelta, CelsiusDelta, FahrenheitDelta,
+    };
 }

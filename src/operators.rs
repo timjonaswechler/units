@@ -1,4 +1,4 @@
-use crate::quantity::Quantity;
+use crate::quantity::{Quantity, CanAddSameQuantity};
 use crate::unit::Unit;
 use crate::value::Value;
 use core::ops::{Add, Sub, Mul, Div, Neg};
@@ -11,9 +11,12 @@ use core::ops::{Add, Sub, Mul, Div, Neg};
 ///
 /// Only values with the same dimensional signature can be added.
 /// The result has the same quantity and the unit of the left operand.
+///
+/// Note: This only works for quantities that implement CanAddSameQuantity.
+/// Absolute temperatures cannot be added together (use TemperatureDifference instead).
 impl<Q, U1, U2> Add<Value<Q, U2>> for Value<Q, U1>
 where
-    Q: Quantity,
+    Q: CanAddSameQuantity,
     U1: Unit<BaseQuantity = Q>,
     U2: Unit<BaseQuantity = Q>,
 {
@@ -35,9 +38,12 @@ where
 ///
 /// Only values with the same dimensional signature can be subtracted.
 /// The result has the same quantity and the unit of the left operand.
+///
+/// Note: This only works for quantities that implement CanAddSameQuantity.
+/// For absolute temperatures, subtraction is handled specially and returns a TemperatureDifference.
 impl<Q, U1, U2> Sub<Value<Q, U2>> for Value<Q, U1>
 where
-    Q: Quantity,
+    Q: CanAddSameQuantity,
     U1: Unit<BaseQuantity = Q>,
     U2: Unit<BaseQuantity = Q>,
 {
@@ -192,6 +198,8 @@ mod tests {
         const DIMENSION: Dimension = Dimension::length();
         const NAME: &'static str = "TestQuantity";
     }
+
+    impl CanAddSameQuantity for TestQuantity {}
 
     #[derive(Debug, Clone, Copy)]
     struct TestUnit1;

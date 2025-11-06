@@ -13,6 +13,8 @@ impl Quantity for Time {
     const NAME: &'static str = "Time";
 }
 
+impl crate::quantity::CanAddSameQuantity for Time {}
+
 // ============================================================================
 // SI Base Unit
 // ============================================================================

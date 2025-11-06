@@ -8,7 +8,7 @@ A compile-time type-safe unit system for Rust with dimensional analysis and zero
 - **⚡ Zero-Cost**: All dimensional checks happen at compile time
 - **🔧 Extensible**: Easy to add new units and quantities
 - **📏 Comprehensive**: Includes common SI and Imperial units
-- **🌡️ Temperature-Aware**: Special handling for absolute vs. relative temperatures (in progress)
+- **🌡️ Temperature-Aware**: Solves the "Celsius Problem" with separate absolute/relative types
 - **🧮 Arithmetic**: Natural mathematical operations with automatic unit conversions
 
 ## Quick Start
@@ -127,6 +127,55 @@ let time = Value::<Time, Second>::new(10.0);
 - Imperial: `Pound`, `Ounce`, `Stone`
 - Astronomical: `SolarMass`, `EarthMass`
 
+### Temperature ⭐ Special Handling
+
+Temperature is handled specially with two distinct types to solve the "Celsius Problem":
+
+**AbsoluteTemperature** - An absolute temperature value (e.g., "20°C")
+- Units: `Kelvin`, `Celsius`, `Fahrenheit`
+- Cannot be added together (prevents meaningless operations)
+- Can be subtracted to get a difference
+
+**TemperatureDifference** - A temperature change (e.g., "+10°C change")
+- Units: `KelvinDelta`, `CelsiusDelta`, `FahrenheitDelta`
+- Can be added together
+- Can be added to absolute temperatures
+
+#### The Celsius Problem
+
+The problem: If you naively add `10°C + 20°C` using SI conversion, you get:
+```
+(10 + 273.15) + (20 + 273.15) = 566.3 K ≠ 30°C (303.15 K)
+```
+
+Our solution: Two separate types with different arithmetic rules:
+
+```rust
+use units::prelude::*;
+
+// ❌ This is a COMPILE ERROR (prevents the problem):
+// let temp1 = Value::<AbsoluteTemperature, Celsius>::new(10.0);
+// let temp2 = Value::<AbsoluteTemperature, Celsius>::new(20.0);
+// let invalid = temp1 + temp2;  // ERROR: cannot add absolute temperatures
+
+// ✓ Instead, use temperature differences:
+let change1 = Value::<TemperatureDifference, CelsiusDelta>::new(10.0);
+let change2 = Value::<TemperatureDifference, CelsiusDelta>::new(20.0);
+let total_change = change1 + change2;  // 30°C change ✓
+
+let start = Value::<AbsoluteTemperature, Celsius>::new(0.0);
+let result = start + total_change;  // 30°C ✓
+```
+
+**Allowed Temperature Operations:**
+- ✓ `AbsoluteTemperature - AbsoluteTemperature = TemperatureDifference`
+- ✓ `AbsoluteTemperature + TemperatureDifference = AbsoluteTemperature`
+- ✓ `AbsoluteTemperature - TemperatureDifference = AbsoluteTemperature`
+- ✓ `TemperatureDifference + TemperatureDifference = TemperatureDifference`
+- ✗ `AbsoluteTemperature + AbsoluteTemperature = COMPILE ERROR`
+
+See `examples/temperature_demo.rs` for a complete demonstration.
+
 ## Arithmetic Operations
 
 ### Addition and Subtraction
@@ -209,6 +258,9 @@ cargo run --example basic_usage
 
 # Type safety demonstration
 cargo run --example type_safety_demo
+
+# Temperature handling (solves the "Celsius Problem")
+cargo run --example temperature_demo
 ```
 
 ## Running Tests
@@ -223,7 +275,7 @@ cargo test
 src/
 ├── lib.rs              # Main library entry
 ├── dimension.rs        # Dimensional analysis
-├── quantity.rs         # Quantity trait
+├── quantity.rs         # Quantity trait + marker traits
 ├── unit.rs            # Unit trait
 ├── value.rs           # Value type with units
 ├── prefix.rs          # SI prefix system
@@ -231,7 +283,8 @@ src/
 └── quantities/        # Predefined quantities
     ├── length.rs
     ├── time.rs
-    └── mass.rs
+    ├── mass.rs
+    └── temperature.rs  # Special temperature handling
 ```
 
 ## Roadmap
@@ -239,7 +292,7 @@ src/
 - [x] Core type-safe unit system
 - [x] Basic arithmetic operations
 - [x] SI and Imperial units for Length, Time, Mass
-- [ ] Temperature handling (absolute vs. relative)
+- [x] **Temperature handling (absolute vs. relative)** ⭐ **SOLVED!**
 - [ ] Compound quantities (Velocity, Acceleration, Force, etc.)
 - [ ] Macros for easy unit definition
 - [ ] More physical quantities (Current, Voltage, etc.)

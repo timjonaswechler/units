@@ -13,6 +13,8 @@ impl Quantity for Mass {
     const NAME: &'static str = "Mass";
 }
 
+impl crate::quantity::CanAddSameQuantity for Mass {}
+
 // ============================================================================
 // SI Base Unit
 // ============================================================================
