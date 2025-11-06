@@ -27,6 +27,7 @@ pub mod unit;
 pub mod value;
 pub mod prefix;
 pub mod operators;
+pub mod macros;
 
 // Quantity definitions
 pub mod quantities;
@@ -37,7 +38,10 @@ pub mod prelude {
     pub use crate::quantity::Quantity;
     pub use crate::unit::Unit;
     pub use crate::value::Value;
-    pub use crate::prefix::Prefix;
+    pub use crate::prefix::{Prefix, Kilo, Mega, Giga, Milli, Micro, Nano};
+
+    // Macros
+    pub use crate::{define_quantity, define_units, define_quantity_with_units};
 
     // Common quantities
     pub use crate::quantities::length::{Length, Meter, Kilometer, Centimeter, Millimeter};

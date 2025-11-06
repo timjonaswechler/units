@@ -4,6 +4,7 @@ pub mod length;
 pub mod time;
 pub mod mass;
 pub mod temperature;
+pub mod astronomy;
 
 // Re-exports
 pub use length::{Length, Meter, Kilometer, Centimeter, Millimeter};
@@ -13,4 +14,16 @@ pub use temperature::{
     AbsoluteTemperature, TemperatureDifference,
     Kelvin, Celsius, Fahrenheit,
     KelvinDelta, CelsiusDelta, FahrenheitDelta,
+};
+
+// Astronomy re-exports
+pub use astronomy::{
+    Distance, AstronomicalUnit, EarthRadius, SunRadius, LightYear, Parsec,
+    AstroMass, EarthMass, SolarMass,
+    Luminosity, Watt, SolarLuminosity,
+    Angle, Radian, Degree, Arcminute, Arcsecond, Milliarcsecond,
+    Velocity, MeterPerSecond, KilometerPerSecond, SpeedOfLight,
+    Acceleration, MeterPerSecondSquared, StandardGravity,
+    Area, SquareMeter, SquareKilometer,
+    Pressure, Pascal, Bar, Atmosphere,
 };

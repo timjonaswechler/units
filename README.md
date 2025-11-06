@@ -6,7 +6,7 @@ A compile-time type-safe unit system for Rust with dimensional analysis and zero
 
 - **🔒 Type-Safe**: Catch unit errors at compile time, not runtime
 - **⚡ Zero-Cost**: All dimensional checks happen at compile time
-- **🔧 Extensible**: Easy to add new units and quantities
+- **🔧 Extensible**: Easy to add new units with macros
 - **📏 Comprehensive**: Includes common SI and Imperial units
 - **🌡️ Temperature-Aware**: Solves the "Celsius Problem" with separate absolute/relative types
 - **🧮 Arithmetic**: Natural mathematical operations with automatic unit conversions
@@ -239,6 +239,58 @@ let inches = meters.convert::<Inch>();
 assert_eq!(inches.get(), 39370.07874015748);
 ```
 
+## Defining Custom Units with Macros
+
+The library provides powerful macros for easy definition of new quantities and units:
+
+```rust
+use units::{define_quantity_with_units};
+use units::dimension::Dimension;
+
+// Define a new quantity with its units in one go
+define_quantity_with_units! {
+    quantity: Velocity,
+    dimension: Dimension::VELOCITY,  // LT⁻¹
+    base_unit: MeterPerSecond = 1.0,
+    units: {
+        KilometerPerHour = 0.277778,
+        MilesPerHour = 0.44704,
+        SpeedOfLight = 299_792_458.0,
+    }
+}
+
+// Now use it!
+let c = Value::<Velocity, SpeedOfLight>::new(1.0);
+let mps = c.convert::<MeterPerSecond>();
+// c = 299,792,458 m/s
+```
+
+### Available Predefined Dimensions
+
+- **Base**: `Dimension::length()`, `Dimension::time()`, `Dimension::mass()`, `Dimension::temperature()`
+- **Derived**: `Dimension::VELOCITY`, `Dimension::ACCELERATION`, `Dimension::FORCE`, `Dimension::ENERGY`, `Dimension::POWER`, `Dimension::PRESSURE`, `Dimension::AREA`, `Dimension::VOLUME`
+- **Special**: `Dimension::DIMENSIONLESS` (for angles, ratios, etc.)
+
+### Custom Dimensions
+
+Build complex dimensions using operations:
+
+```rust
+// Momentum = Mass × Velocity = M × LT⁻¹ = MLT⁻¹
+define_quantity!(
+    Momentum,
+    Dimension::mass().multiply(Dimension::VELOCITY)
+);
+
+// Jerk = Acceleration / Time = LT⁻² / T = LT⁻³
+define_quantity!(
+    Jerk,
+    Dimension::ACCELERATION.divide(Dimension::time())
+);
+```
+
+See [`MIGRATION.md`](MIGRATION.md) for more examples and a complete migration guide from old systems.
+
 ## Prefixes (In Development)
 
 SI prefixes can be applied to units:
@@ -261,6 +313,9 @@ cargo run --example type_safety_demo
 
 # Temperature handling (solves the "Celsius Problem")
 cargo run --example temperature_demo
+
+# Macro system and custom unit definitions
+cargo run --example macro_usage
 ```
 
 ## Running Tests
@@ -293,10 +348,12 @@ src/
 - [x] Basic arithmetic operations
 - [x] SI and Imperial units for Length, Time, Mass
 - [x] **Temperature handling (absolute vs. relative)** ⭐ **SOLVED!**
-- [ ] Compound quantities (Velocity, Acceleration, Force, etc.)
-- [ ] Macros for easy unit definition
-- [ ] More physical quantities (Current, Voltage, etc.)
-- [ ] no_std support with libm
+- [x] **Macros for easy unit definition** ⭐ **DONE!**
+- [x] Astronomical quantities (Distance, Mass, Luminosity, Angle, etc.)
+- [ ] Compound quantities via type-level multiplication/division
+- [ ] More physical quantities (Current, Voltage, Resistance, etc.)
+- [ ] Improved prefix system integration
+- [ ] no_std support
 - [ ] Serde support for serialization
 
 ## Contributing
