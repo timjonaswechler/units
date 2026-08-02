@@ -1,76 +1,57 @@
-//! Typed scalar SI values and unit-scale conversion for the star simulation.
+//! # Units - A Type-Safe Physical Units Library for Rust
 //!
-//! Quantities store one canonical SI `f64`. Units and prefixes are zero-sized
-//! types used only at construction and conversion boundaries.
+//! This library provides compile-time dimensional analysis and unit conversions
+//! with zero runtime overhead.
 //!
-//! With the optional `serde` feature, quantities serialize transparently as
-//! their bare canonical SI `f64`. The selected data format controls non-finite
-//! behavior: RON can roundtrip non-finite values, while JSON serializes them as
-//! `null` and cannot deserialize that value back into a quantity. This format
-//! limitation does not change the quantity API, which accepts every `f64`.
+//! ## Features
 //!
-//! ```
-//! use units::{Kilogram, Mass, SolarMass};
+//! - **Type-safe**: Compile-time checking of dimensional correctness
+//! - **Zero-cost**: All checks happen at compile time
+//! - **Extensible**: Easy to add new units and quantities
+//! - **Temperature-aware**: Proper handling of absolute vs. relative temperatures
 //!
-//! let sun = Mass::new::<SolarMass>(1.0);
-//! let kilograms: f64 = sun.to::<Kilogram>();
-//! let raw_si: f64 = sun.si();
-//! let restored = Mass::from_si(raw_si);
+//! ## Example
 //!
-//! assert_eq!(restored, sun);
-//! assert_eq!(kilograms, raw_si);
-//! ```
+//! ```rust
+//! use units::prelude::*;
 //!
-//! Units cannot cross quantity boundaries:
+//! let meters = Value::<Length, Meter>::new(100.0);
+//! let centimeters = Value::<Length, Centimeter>::new(50.0);
+//! let total = meters + centimeters;
 //!
-//! ```compile_fail
-//! use units::{Mass, Second};
-//!
-//! let _ = Mass::new::<Second>(1.0);
-//! ```
-//!
-//! ```compile_fail
-//! use units::{Mass, Second};
-//!
-//! let mass = Mass::from_si(1.0);
-//! let _ = mass.to::<Second>();
-//! ```
-//!
-//! Units must opt in to prefixes:
-//!
-//! ```compile_fail
-//! use units::{Kilo, Mass, Prefixed, SolarMass};
-//!
-//! type KiloSolarMass = Prefixed<Kilo, SolarMass>;
-//! let _ = Mass::new::<KiloSolarMass>(1.0);
-//! ```
-//!
-//! Prefixes cannot be nested:
-//!
-//! ```compile_fail
-//! use units::{Kilo, Kilogram, Mass, Prefixed};
-//!
-//! type KiloKilogram = Prefixed<Kilo, Kilogram>;
-//! let _ = Mass::new::<KiloKilogram>(1.0);
-//! ```
-//!
-//! Quantities intentionally have no arithmetic operators:
-//!
-//! ```compile_fail
-//! use units::{Mass, SolarMass};
-//!
-//! let left = Mass::new::<SolarMass>(1.0);
-//! let right = Mass::new::<SolarMass>(1.0);
-//! let _ = left + right;
+//! assert_eq!(total.get(), 100.5);
 //! ```
 
-#![forbid(unsafe_code)]
+// Module declarations
+pub mod dimension;
+pub mod macros;
+pub mod operators;
+pub mod prefix;
+pub mod quantity;
+pub mod scalar;
+pub mod unit;
+pub mod value;
 
-mod core;
-mod macros;
-mod prefixes;
-mod quantities;
+// Quantity definitions
+pub mod quantities;
 
-pub use core::{Prefix, PrefixableUnit, Prefixed, Unit};
-pub use prefixes::*;
-pub use quantities::*;
+// Re-exports for convenience
+pub mod prelude {
+    pub use crate::dimension::Dimension;
+    pub use crate::prefix::{Giga, Kilo, Mega, Micro, Milli, Nano, Prefix};
+    pub use crate::quantity::Quantity;
+    pub use crate::unit::Unit;
+    pub use crate::value::Value;
+
+    // Macros
+    pub use crate::{define_quantity, define_quantity_with_units, define_units};
+
+    // Common quantities
+    pub use crate::quantities::length::{Centimeter, Kilometer, Length, Meter, Millimeter};
+    pub use crate::quantities::mass::{Gram, Kilogram, Mass};
+    pub use crate::quantities::temperature::{
+        AbsoluteTemperature, Celsius, CelsiusDelta, Fahrenheit, FahrenheitDelta, Kelvin,
+        KelvinDelta, TemperatureDifference,
+    };
+    pub use crate::quantities::time::{Hour, Minute, Second, Time};
+}

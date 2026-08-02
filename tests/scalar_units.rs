@@ -1,6 +1,6 @@
 use std::mem::{align_of, size_of};
 
-use units::{
+use units::scalar::{
     AstronomicalUnit, Centi, Day, EarthMass, Giga, Gram, Hour, JulianYear, Kelvin, Kilo, Kilogram,
     Kilometer, Length, LightYear, Mass, Mega, Meter, Milli, Millisecond, Minute, Parsec, Prefixed,
     Second, SolarMass, Temperature, Time,

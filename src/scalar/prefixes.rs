@@ -1,4 +1,4 @@
-use crate::macros::define_prefix;
+use crate::scalar::macros::define_prefix;
 
 define_prefix!(Yotta, factor = 1e24);
 define_prefix!(Zetta, factor = 1e21);
