@@ -1,0 +1,22 @@
+use crate::macros::define_prefix;
+
+define_prefix!(Yotta, factor = 1e24);
+define_prefix!(Zetta, factor = 1e21);
+define_prefix!(Exa, factor = 1e18);
+define_prefix!(Peta, factor = 1e15);
+define_prefix!(Tera, factor = 1e12);
+define_prefix!(Giga, factor = 1e9);
+define_prefix!(Mega, factor = 1e6);
+define_prefix!(Kilo, factor = 1e3);
+define_prefix!(Hecto, factor = 1e2);
+define_prefix!(Deca, factor = 1e1);
+define_prefix!(Deci, factor = 1e-1);
+define_prefix!(Centi, factor = 1e-2);
+define_prefix!(Milli, factor = 1e-3);
+define_prefix!(Micro, factor = 1e-6);
+define_prefix!(Nano, factor = 1e-9);
+define_prefix!(Pico, factor = 1e-12);
+define_prefix!(Femto, factor = 1e-15);
+define_prefix!(Atto, factor = 1e-18);
+define_prefix!(Zepto, factor = 1e-21);
+define_prefix!(Yocto, factor = 1e-24);
