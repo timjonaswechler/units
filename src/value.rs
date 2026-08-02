@@ -41,6 +41,35 @@ pub struct Value<Q: Quantity, U: Unit<BaseQuantity = Q>> {
     _phantom: PhantomData<(Q, U)>,
 }
 
+#[cfg(feature = "serde")]
+impl<Q, U> serde::Serialize for Value<Q, U>
+where
+    Q: Quantity,
+    U: Unit<BaseQuantity = Q>,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_f64(self.value)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de, Q, U> serde::Deserialize<'de> for Value<Q, U>
+where
+    Q: Quantity,
+    U: Unit<BaseQuantity = Q>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <f64 as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(Self::new(value))
+    }
+}
+
 impl<Q: Quantity, U: Unit<BaseQuantity = Q>> Value<Q, U> {
     /// Creates a new Value with the given amount in unit U
     ///
@@ -251,5 +280,17 @@ mod tests {
         let val1 = Value::<TestQuantity, TestUnit1>::new(10.0);
         let val2 = Value::<TestQuantity, TestUnit2>::new(5.0);
         assert_eq!(val1, val2); // Same SI value
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn serde_round_trip_preserves_the_selected_unit_value() {
+        let original = Value::<TestQuantity, TestUnit2>::new(5.0);
+        let serialized = ron::to_string(&original).unwrap();
+        let restored: Value<TestQuantity, TestUnit2> = ron::from_str(&serialized).unwrap();
+
+        assert_eq!(serialized, "5.0");
+        assert_eq!(restored.get(), 5.0);
+        assert_eq!(restored.get_si(), 10.0);
     }
 }
